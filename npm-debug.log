@@ -1,0 +1,28 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install' ]
+2 info using npm@2.14.4
+3 info using node@v4.1.1
+4 verbose readDependencies loading dependencies from D:\working\projects\patientApp\package.json
+5 error install Couldn't read dependencies
+6 verbose stack Error: Invalid name: "���ﱦ"
+6 verbose stack     at ensureValidName (C:\Program Files\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\fixer.js:331:15)
+6 verbose stack     at Object.module.exports.fixNameField (C:\Program Files\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\fixer.js:210:5)
+6 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\normalize.js:32:38
+6 verbose stack     at Array.forEach (native)
+6 verbose stack     at normalize (C:\Program Files\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\normalize.js:31:15)
+6 verbose stack     at final (C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:338:5)
+6 verbose stack     at then (C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:113:5)
+6 verbose stack     at ReadFileContext.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:284:20)
+6 verbose stack     at ReadFileContext.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:76:16)
+6 verbose stack     at FSReqWrap.readFileAfterOpen [as oncomplete] (fs.js:303:13)
+7 verbose cwd D:\working\projects\patientApp
+8 error Windows_NT 6.1.7601
+9 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+10 error node v4.1.1
+11 error npm  v2.14.4
+12 error Invalid name: "���ﱦ"
+13 error If you need help, you may report this error at:
+13 error     <https://github.com/npm/npm/issues>
+14 verbose exit [ 1, true ]
