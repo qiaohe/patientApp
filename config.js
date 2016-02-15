@@ -5,7 +5,7 @@ module.exports = {
         name: '云诊宝APP',
         version: '0.0.1',
         host: 'localhost',
-        port: 3000
+        port: 3001
     },
     db: {
         host: '121.42.171.213',
@@ -24,16 +24,13 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6382
+        port: 6379
     },
     sms: {
-        providerUrl: 'http://115.29.44.189:8080/sms/smsInterface.do',
-        template: '【云诊宝】您的短信验证码是:code,在60秒内输入有效.',
-        expireTime: 60000,
-        option: {
-            username: 'tuning',
-            password: '111111'
-        }
+        providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
+        template: '【云诊宝】您的短信验证码是:code,在30分钟内输入有效。',
+        expireTime: 1800000,
+        apikey:'410ac09436843c0270f513a0d84802cc'
     },
     qiniu: {
         ak: "ZNrhKtanGiBCTOPg4XRD9SMOAbLzy8iREzQzUP5T",
