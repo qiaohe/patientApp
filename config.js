@@ -30,7 +30,7 @@ module.exports = {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
         template: '【云诊宝】您的短信验证码是:code,在30分钟内输入有效。',
         expireTime: 1800000,
-        apikey:'410ac09436843c0270f513a0d84802cc'
+        apikey: '410ac09436843c0270f513a0d84802cc'
     },
     qiniu: {
         ak: "ZNrhKtanGiBCTOPg4XRD9SMOAbLzy8iREzQzUP5T",
@@ -62,6 +62,8 @@ module.exports = {
     outPatientReminderTemplate: '【%s】，您预约的【%s医生】门诊，就诊时间%s，现在离就诊时间还剩1小时，请提前到分诊台，进行确认。',
     outPatientCallTemplate: '【%s】，请您到%s诊室就诊，接诊医生：【%s】。',
     notAvailableTemplate: '【%s】，很抱歉，您预约的【%s医生】门诊，就诊时间%s已过，请及时与前台联系，谢谢！',
-    returnRegistrationTemplte: '【%s】，很抱歉，您预约的【%s医生】门诊，就诊时间%s已过，请及时与前台联系，谢谢！'
+    returnRegistrationTemplte: '【%s】，很抱歉，您预约的【%s医生】门诊，就诊时间%s已过，请及时与前台联系，谢谢！',
+    orderStatus: ['未支付', '已支付', '已取消', '完成'],
+    orderType: ["挂号费", "药费", "诊疗费"]
 };
 

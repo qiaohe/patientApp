@@ -61,5 +61,8 @@ module.exports = {
     notification: {
         insert: 'insert notification set ?',
         findAll: 'select * from Notification where uid=? order by id desc limit ?, ?'
+    },
+    medical: {
+        findMedicalHistories: 'select m.id, m.chiefComplain, m.resumptiveDiagnosis, r.departmentName, r.hospitalName, r.doctorName, r.gender,p.birthday , concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.registrationType from MedicalHistory m left join Registration r on r.id = m.registrationId left JOIN ShiftPeriod s on s.id= r.shiftPeriod left join PatientBasicInfo p on p.id= r.patientBasicInfoId where r.patientBasicInfoId=? limit ?, ?'
     }
 }

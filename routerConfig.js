@@ -208,6 +208,11 @@ module.exports = [
         path: "/api/changeMobile",
         handler: patientController.changeMobile,
         secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/medicalHistories",
+        handler: patientController.changeMobile,
+        secured: 'user'
     }
-
 ];
