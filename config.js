@@ -14,7 +14,7 @@ module.exports = {
         password: 'heqiao75518',
         debug: false,
         multipleStatements: true,
-        database: 'medicalclouddb'
+        database: 'medicalDB'
     },
     app: {
         locale: 'zh_CN',

@@ -15,6 +15,8 @@ module.exports = {
         }).then(function (hospitals) {
             if (!hospitals) return res.send({ret: 0, data: []});
             return res.send({ret: 0, data: hospitals});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -22,6 +24,8 @@ module.exports = {
         hospitalDAO.searchDoctor(req.query.name, {from: req.query.from, size: req.query.size}).then(function (doctors) {
             if (!doctors) return res.send({ret: 0, data: []});
             return res.send({ret: 0, data: doctors});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -34,6 +38,8 @@ module.exports = {
         }).then(function (doctors) {
             data.doctors = doctors;
             return res.send({ret: 0, data: data});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -41,6 +47,8 @@ module.exports = {
     getHospitals: function (req, res, next) {
         hospitalDAO.findAll({from: req.query.from, size: req.query.size}).then(function (hospitals) {
             return res.send({ret: 0, data: hospitals});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -48,6 +56,8 @@ module.exports = {
         var hospitalId = req.params.hospitalId;
         hospitalDAO.findDepartmentsBy(hospitalId).then(function (departments) {
             return res.send({ret: 0, data: departments});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -57,6 +67,8 @@ module.exports = {
         var hospitalId = req.params.hospitalId;
         hospitalDAO.findDoctorsByDepartment(hospitalId, departmentId).then(function (doctors) {
             return res.send({ret: 0, data: doctors});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -70,6 +82,8 @@ module.exports = {
                 hospital.favorited = (index != null);
                 res.send({ret: 0, data: hospital});
             });
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -82,6 +96,8 @@ module.exports = {
                 doctor.favorited = (index != null);
                 return res.send({ret: 0, data: doctor});
             });
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -109,6 +125,8 @@ module.exports = {
                 result.push(item);
             }
             res.send({ret: 0, data: result});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     }

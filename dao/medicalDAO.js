@@ -5,5 +5,19 @@ var moment = require('moment');
 module.exports = {
     findMedicalHistories: function (uid, page) {
         return db.query(sqlMapping.medical.findMedicalHistories, [uid, page.from, page.size]);
+    },
+    findRecipes: function (uid, page) {
+        return db.query(sqlMapping.medical.findRecipes, [uid, page.from, page.size]);
+    },
+
+    findRecipesByRegistrationId: function (registrationId) {
+        return db.query(sqlMapping.medical.findRecipesByRegistrationId, [registrationId]);
+    },
+    findOrders: function (uid, status, page) {
+        if (status) return db.query(sqlMapping.medical.findOrdersWithStatus, [uid, status, page.from, page.size]);
+        return db.query(sqlMapping.medical.findOrders, [uid, page.from, page.size]);
+    },
+    findOrdersBy: function (orderNo) {
+        return db.query(sqlMapping.medical.findOrdersBy, [orderNo]);
     }
 }

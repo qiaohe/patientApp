@@ -3,6 +3,7 @@ var thirdPartyController = require('./controller/thirdPartyController');
 var hospitalController = require('./controller/hospitalController');
 var patientController = require('./controller/patientController');
 var deviceController = require('./controller/deviceController');
+var medicalController = require('./controller/medicalController');
 module.exports = [
     {
         method: "post",
@@ -123,7 +124,7 @@ module.exports = [
         handler: patientController.getFavouritedDoctors,
         secured: "user"
     },
-  {
+    {
         method: "get",
         path: "/api/favorites/hospitals",
         handler: patientController.getFavouritedHospitals,
@@ -212,7 +213,25 @@ module.exports = [
     {
         method: "get",
         path: "/api/medicalHistories",
-        handler: patientController.changeMobile,
+        handler: medicalController.getMedicalHistories,
+        secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/recipes",
+        handler: medicalController.getRecipes,
+        secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/orders",
+        handler: medicalController.getOrders,
+        secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/orders/:orderNo",
+        handler: medicalController.getOrdersBy,
         secured: 'user'
     }
 ];

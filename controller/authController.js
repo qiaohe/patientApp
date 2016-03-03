@@ -83,6 +83,8 @@ module.exports = {
                     });
                 });
             });
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
@@ -107,7 +109,9 @@ module.exports = {
                 user.rongToken = JSON.parse(resultText).token;
                 res.send({ret: 0, data: user});
             });
-        });
+        }).catch(function (err) {
+            res.send(err);
+        });;
         return next();
     },
 
@@ -116,6 +120,8 @@ module.exports = {
         if (!token) return res.send(401, i18n.get('token.not.provided'));
         redis.delAsync(token).then(function () {
             res.send({ret: 0, message: i18n.get('logout.success')});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     }
@@ -139,6 +145,8 @@ module.exports = {
                 redis.set(token, JSON.stringify(users[0]));
                 res.send({ret: 0, data: {uid: users[0].id, token: token}});
             });
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     }
