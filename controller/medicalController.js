@@ -102,7 +102,7 @@ module.exports = {
 
     getComments: function (req, res, next) {
         var doctorId = req.params.id;
-        medicalDAO.findCommentsByDoctor(doctorId, {
+        medicalDAO.findCommentBy(doctorId, {
             from: +req.query.from,
             size: +req.query.size
         }).then(function (comments) {
