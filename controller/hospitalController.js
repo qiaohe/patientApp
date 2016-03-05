@@ -3,6 +3,7 @@ var config = require('../config');
 var redis = require('../common/redisClient');
 var i18n = require('../i18n/localeMessage');
 var hospitalDAO = require('../dao/hospitalDAO');
+var medicalDAO = require('../dao/medicalDAO');
 var _ = require('lodash');
 var moment = require('moment');
 var rongcloudSDK = require('rongcloud-sdk');
@@ -89,13 +90,17 @@ module.exports = {
     },
     getDoctorById: function (req, res, next) {
         var queue = 'uid:' + req.user.id + ':favorite:' + 'doctors';
+        var doctor = {};
         hospitalDAO.findDoctorById(req.params.doctorId).then(function (doctors) {
-            var doctor = doctors[0];
+            doctor = doctors[0];
             doctor.images = doctor.images && doctor.images.split(',');
-            return redis.zrankAsync(queue, req.params.doctorId).then(function (index) {
-                doctor.favorited = (index != null);
-                return res.send({ret: 0, data: doctor});
-            });
+            return redis.zrankAsync(queue, req.params.doctorId);
+        }).then(function (index) {
+            doctor.favorited = (index != null);
+            return medicalDAO.findCommentBy(req.params.doctorId, {from: 0, size: 2});
+        }).then(function (comments) {
+            doctor.comments = comments;
+            res.send({ret: 0, datat: doctor});
         }).catch(function (err) {
             res.send(err);
         });

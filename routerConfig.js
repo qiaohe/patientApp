@@ -233,5 +233,17 @@ module.exports = [
         path: "/api/orders/:orderNo",
         handler: medicalController.getOrdersBy,
         secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/doctors/:id/comments",
+        handler: medicalController.getComments,
+        secured: 'user'
+    },
+    {
+        method: "post",
+        path: "/api/orders/:orderNo/comments",
+        handler: medicalController.addComment,
+        secured: 'user'
     }
 ];

@@ -28,7 +28,7 @@ module.exports = {
 
     doctor: {
         findByDepartment: 'select id, name, departmentName, hospitalName, headPic,registrationFee, speciality,jobTitle from Doctor where hospitalId = ?  and departmentId = ?',
-        findById: 'select id, name, departmentName,hospitalId, hospitalName, headPic,registrationFee, speciality,introduction, images,jobTitle, departmentId, jobTitleId from Doctor where id =?',
+        findById: 'select id, name, departmentName,hospitalId, hospitalName, headPic,registrationFee, speciality,introduction, images,jobTitle, departmentId, jobTitleId, commentCount from Doctor where id =?',
         findShitPlans: 'select p.`name` as period, `day`, actualQuantity, plannedQuantity, p.id as periodId from ShiftPlan sp, ShiftPeriod p where sp.shiftPeriod = p.id and sp.doctorId = ? and sp.day>? and sp.day<=? and sp.actualQuantity < sp.plannedQuantity and sp.plannedQuantity > 0 order by sp.day, sp.shiftPeriod',
         findBy: 'select id, name, departmentName,hospitalId, hospitalName, headPic,registrationFee, speciality,jobTitle from Doctor where departmentId=? and registrationFee=?'
     },
@@ -68,6 +68,10 @@ module.exports = {
         findRecipesByRegistrationId: 'select id, name, specification, quantity, unit, `usage`,dosage from Recipe where registrationId = ?',
         findOrders: 'select m.orderNo, m.type, m.createDate, r.doctorName, r.departmentName, r.hospitalName, h.icon as hospitalIcon, m.`status`, m.amount,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod from MedicalOrder m LEFT JOIN Registration r on r.id = m.registrationId left join ShiftPeriod s on s.id = r.shiftPeriod left join Hospital h on h.id=r.hospitalId where r.patientBasicInfoId=? order by m.createDate desc limit ?,?',
         findOrdersWithStatus: 'select m.orderNo, m.type, m.createDate, r.doctorName, r.departmentName, r.hospitalName, h.icon as hospitalIcon, m.`status`, m.amount,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod from MedicalOrder m LEFT JOIN Registration r on r.id = m.registrationId left join ShiftPeriod s on s.id = r.shiftPeriod left join Hospital h on h.id=r.hospitalId where r.patientBasicInfoId=? and m.status=? order by m.createDate desc limit ?,?',
-        findOrdersBy: 'select * from MedicalOrder where orderNo =?'
+        findOrdersBy: 'select m.*, r.doctorId from MedicalOrder m left join Registration r on r.id = m.registrationId where m.orderNo =?',
+        insertComment: 'insert Comment set ?',
+        updateCommentCount: 'update Doctor set commentCount=commentCount + 1 where id=?',
+        updateCommentStatus: 'update MedicalOrder set commented=1 where orderNo=?',
+        findCommentsByDoctor: 'select uid, nickName, headPic, createDate, attitude, medicalSkill, content from Comment where doctorId = ? order by createDate DESC limit ?,?'
     }
 }
