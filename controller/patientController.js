@@ -7,7 +7,6 @@ var hospitalDAO = require('../dao/hospitalDAO');
 var patientDAO = require('../dao/patientDAO');
 var deviceDAO = require('../dao/deviceDAO');
 var _ = require('lodash');
-var request = require('request');
 var moment = require('moment');
 var Promise = require('bluebird');
 var pusher = require('../domain/NotificationPusher');
@@ -70,6 +69,23 @@ module.exports = {
         }).then(function (result) {
             registration.id = result.insertId;
             return registrationDAO.updateShiftPlan(registration.doctorId, registration.registerDate, registration.shiftPeriod);
+        }).then(function () {
+            return redis.incrAsync('h:' + registration.hospitalId + ':' + moment().format('YYYYMMDD') + ':0:incr').then(function (reply) {
+                var orderNo = registration.hospitalId + '-' + moment().format('YYYYMMDD') + '-0-' + reply;
+                var o = {
+                    orderNo: orderNo,
+                    registrationId: registration.id,
+                    hospitalId: registration.hospitalId,
+                    amount: registration.registrationFee,
+                    paidAmount: 0.00,
+                    paymentAmount: registration.registrationFee,
+                    status: 0,
+                    paymentType: 1,
+                    createDate: new Date(),
+                    type: 0
+                };
+                return registrationDAO.insertOrder(o);
+            });
         }).then(function () {
             return registrationDAO.findShiftPeriodById(registration.hospitalId, registration.shiftPeriod);
         }).then(function (result) {

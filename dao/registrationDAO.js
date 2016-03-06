@@ -44,6 +44,9 @@ module.exports = {
     updateInvitationContact: function (contact) {
         return db.query(sqlMapping.patient.updateContact, [contact, contact.id]);
     },
+    insertOrder: function (order) {
+        return db.query(sqlMapping.registration.insertOrder, order);
+    },
     updatePerformance: function (businessPeopleId, yearMonth) {
         return db.query(sqlMapping.patient.updatePerformance, [businessPeopleId, yearMonth]);
     },
@@ -51,7 +54,7 @@ module.exports = {
         console.log(date)
         return db.query(sqlMapping.registration.findRegistrationsByDate, date);
     },
-    findPeriods: function(hospitalId) {
+    findPeriods: function (hospitalId) {
         return db.query(sqlMapping.registration.findPeriods, hospitalId);
     }
 }
