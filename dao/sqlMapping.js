@@ -14,7 +14,7 @@ module.exports = {
     },
     hospital: {
         findByNameLike: 'select id, name, tag from Hospital where name like ?',
-        findById: 'select id, name, tag, images, address, icon, introduction, customerServiceUid from Hospital where id = ?',
+        findById: 'select id, name, tag, images, address, icon, introduction, customerServiceUid, contactMobile, contact,telephone, trafficRoute from Hospital where id = ?',
         findByIdWith: 'select id, name, icon as headPic from Hospital where id=?',
         insertPatient: 'insert Patient set ?',
         findPatientByBasicInfoId: 'select * from Patient where patientBasicInfoId = ?',
