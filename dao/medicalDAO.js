@@ -13,6 +13,12 @@ module.exports = {
     findRecipesByRegistrationId: function (registrationId) {
         return db.query(sqlMapping.medical.findRecipesByRegistrationId, [registrationId]);
     },
+    findRecipesByOrderNo: function (orderNo) {
+        return db.query(sqlMapping.medical.findRecipesByOrderNo, orderNo);
+    },
+    findPrescriptionByOrderNo: function (orderNo) {
+        return db.query(sqlMapping.medical.findPrescriptionByOrderNo, orderNo);
+    },
     findOrders: function (uid, status, page) {
         if (status) return db.query(sqlMapping.medical.findOrdersWithStatus, [uid, status, page.from, page.size]);
         return db.query(sqlMapping.medical.findOrders, [uid, page.from, page.size]);

@@ -24,7 +24,7 @@ module.exports = {
     },
     getRecipes: function (req, res, next) {
         var uid = req.user.id;
-        medicalDAO.findRecipes(101, {
+        medicalDAO.findRecipes(uid, {
             from: +req.query.from,
             size: +req.query.size
         }).then(function (recipes) {
@@ -52,7 +52,7 @@ module.exports = {
             orders.forEach(function (order) {
                 order.status = config.orderStatus[order.status];
                 order.type = config.orderType[order.type];
-            })
+            });
             return res.send({ret: 0, data: orders});
         }).catch(function (err) {
             res.send(err);
@@ -62,10 +62,20 @@ module.exports = {
 
     getOrdersBy: function (req, res, next) {
         var orderNo = req.params.orderNo;
-        medicalDAO.findOrdersBy(orderNo).then(function (order) {
+        var order = {};
+        medicalDAO.findOrdersBy(orderNo).then(function (orders) {
+            order = orders[0];
+            if (order.type == 0) return res.send({ret: 0, data: order});
+            if (order.type == 1) return medicalDAO.findRecipesByOrderNo(orderNo);
+            if (order.type == 2) return medicalDAO.findPrescriptionByOrderNo(orderNo);
+        }).then(function (items) {
+            order.detail = items;
             order.status = config.orderStatus[order.status];
             order.type = config.orderType[order.type];
-            res.send({ret: 0, data: order});
+            order.paymentType = config.paymentType[order.paymentType];
+            return res.send({ret: 0, data: order});
+        }).catch(function (err) {
+            res.send(err);
         });
         return next();
     },
