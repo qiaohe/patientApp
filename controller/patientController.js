@@ -374,6 +374,7 @@ module.exports = {
             if (!flows.length) return res.send({ret: 0, data: []});
             flows.forEach(function (flow) {
                 flow.type = config.transactionType[flow.type];
+                flow.paymentType = config.paymentType[flow.paymentType];
             });
             return res.send({ret: 0, data: flows});
         }).catch(function (err) {

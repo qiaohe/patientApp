@@ -38,7 +38,7 @@ module.exports = {
         updateShiftPlan: 'update ShiftPlan set actualQuantity = actualQuantity + 1 where doctorId = ? and day =? and shiftPeriod = ?',
         updateShiftPlanDec: 'update ShiftPlan set actualQuantity = actualQuantity - 1 where doctorId = ? and day =? and shiftPeriod = ?',
         findShiftPeriodById: 'select * from ShiftPeriod where hospitalId = ? and id =?',
-        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, orderNo, r.status  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id and paymentType =1 and patientBasicInfoId = ? order by r.id desc limit ?,?',
+        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id and paymentType =1 and patientBasicInfoId = ? order by r.id desc limit ?,?',
         findById: 'select * from Registration where id =?',
         updateRegistration: "update Registration set ? where id = ?",
         findPeriods: 'select id from ShiftPeriod where hospitalId = ? order by name',
@@ -50,7 +50,7 @@ module.exports = {
         findByKey: 'select * from SysConfig where `key`=?'
     },
     transactionFlow: {
-        findByUid: 'select tf.amount, tf.type,tf.createDate, h.`name` as hospitalName, h.icon as hospitalIcon from TransactionFlow tf, Hospital h WHERE tf.hospitalId = h.id and tf.patientBasicInfoId=? order by tf.createDate desc limit ?, ?'
+        findByUid: 'select tf.amount, tf.paymentType,tf.type,tf.createDate, h.`name` as hospitalName, h.icon as hospitalIcon from TransactionFlow tf, Hospital h WHERE tf.hospitalId = h.id and tf.patientBasicInfoId=? order by tf.createDate desc limit ?, ?'
     },
     device: {
         insert: 'insert Device set ?',
