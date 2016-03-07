@@ -12,7 +12,7 @@ module.exports = {
     },
 
     findAll: function (page) {
-        return db.query('select Hospital.id, name, tag, icon, concat(city.province,city.city) as city from Hospital left join city on city.cityId = Hospital.cityId  limit ' + page.from + ',' + page.size)
+        return db.query('select Hospital.id, name, tag, icon, concat(provId, cityId) as city from Hospital limit ' + page.from + ',' + page.size)
     },
 
     findDepartmentsBy: function (hospitalId) {

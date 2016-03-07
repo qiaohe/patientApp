@@ -112,8 +112,9 @@ module.exports = {
             });
             var result = [];
             for (var key in data) {
+                var p = key.split(' ');
                 var item = {
-                    day: key, actualQuantity: _.sum(data[key], function (item) {
+                    day: p[0], weekName: p[1], actualQuantity: _.sum(data[key], function (item) {
                         return item.actualQuantity;
                     }), plannedQuantity: _.sum(data[key], function (item) {
                         return item.plannedQuantity;
