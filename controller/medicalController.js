@@ -24,7 +24,7 @@ module.exports = {
     },
     getRecipes: function (req, res, next) {
         var uid = req.user.id;
-        medicalDAO.findRecipes(101, {
+        medicalDAO.findRecipes(uid, {
             from: +req.query.from,
             size: +req.query.size
         }).then(function (recipes) {
