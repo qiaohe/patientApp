@@ -62,5 +62,4 @@ module.exports = {
     findCustomerServiceId: function (hospitalId) {
         return db.query(sqlMapping.hospital.findCustomerServiceId, hospitalId);
     }
-
 }

@@ -25,5 +25,17 @@ module.exports = {
     },
     findOrdersBy: function (orderNo) {
         return db.query(sqlMapping.medical.findOrdersBy, [orderNo]);
+    },
+    insertComment: function (comment) {
+        return db.query(sqlMapping.medical.insertComment, comment);
+    },
+    updateCommentCount: function (doctorId) {
+        return db.query(sqlMapping.medical.updateCommentCount, doctorId);
+    },
+    updateCommentStatus: function (orderNo) {
+        return db.query(sqlMapping.medical.updateCommentStatus, orderNo);
+    },
+    findCommentBy: function (doctorId, page) {
+        return db.query(sqlMapping.medical.findCommentsByDoctor, [doctorId, page.from, page.size]);
     }
 }

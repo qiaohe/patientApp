@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: 'localhost',
+        host: '121.42.171.213',
         port: 3001
     },
     db: {
@@ -24,7 +24,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6379
+        port: 6382
     },
     sms: {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
@@ -42,8 +42,8 @@ module.exports = {
         appKey: "ba7b7b62680de68a0d19fa5a"
     },
     rongcloud: {
-        appKey: 'm7ua80gbuxrim',
-        appSecret: 'Z4Vyp9riQ9'
+        appKey: 'z3v5yqkbvtei0',
+        appSecret: 'BDcA3iRjgFp'
     },
     registrationType: ["线上预约", "线下预约", "现场挂号", "复诊预约", "转诊挂号", "现场加号", "线上加号", "销售预约", "销售加号"],
     registrationStatus: ["预约成功", "预约未支付", "预约失败", "预约变更", "预约取消"],
