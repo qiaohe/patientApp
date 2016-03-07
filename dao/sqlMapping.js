@@ -49,7 +49,7 @@ module.exports = {
         findByKey: 'select * from SysConfig where `key`=?'
     },
     transactionFlow: {
-        findByUid: 'select tf.amount, tf.paymentType,tf.type,tf.createDate, h.`name` as hospitalName, h.icon as hospitalIcon from TransactionFlow tf, Hospital h WHERE tf.hospitalId = h.id and tf.patientBasicInfoId=? order by tf.createDate desc limit ?, ?'
+        findByUid: 'select tf.amount, tf.name, tf.paymentType,tf.type,tf.createDate, h.`name` as hospitalName, h.icon as hospitalIcon from TransactionFlow tf, Hospital h WHERE tf.hospitalId = h.id and tf.patientBasicInfoId=? order by tf.createDate desc limit ?, ?'
     },
     device: {
         insert: 'insert Device set ?',
