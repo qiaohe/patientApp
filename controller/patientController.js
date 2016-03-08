@@ -366,8 +366,16 @@ module.exports = {
             res.send(err);
         });
         return next();
-    }
-    ,
+    },
+
+    getCardsByHospitalId: function (req, res, next) {
+        var hospitalId = req.params.hospitalId;
+        patientDAO.findCardByHospital(hospitalId).then(function (cards) {
+            if (!cards.length) return res.send({ret: 0, data: {}});
+            res.send({ret: 0, data: cards[0]});
+        });
+        return next();
+    },
 
     getTransactionFlows: function (req, res, next) {
         hospitalDAO.findTransactionFlowsByUid(req.user.id, +req.query.from, +req.query.size).then(function (flows) {

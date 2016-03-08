@@ -168,7 +168,12 @@ module.exports = [
         handler: patientController.getMemberInfoBy,
         secured: "user"
     },
-
+    {
+        method: "get",
+        path: "/api/hospitals/:id/cards",
+        handler: patientController.getCardsByHospitalId,
+        secured: 'user'
+    },
     {
         method: "put",
         path: "/api/me",

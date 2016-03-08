@@ -27,5 +27,8 @@ module.exports = {
     },
     findContactByInvitationCode: function (invitationCode, inviteMobile) {
         return db.query(sqlMapping.patient.findContactByInvitationCode, [invitationCode, inviteMobile]);
+    },
+    findCardByHospital: function (hospitalId, uid) {
+        return db.query(sqlMapping.patient.findCardByHospital, [hospitalId, uid]);
     }
 }

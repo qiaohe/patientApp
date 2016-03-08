@@ -100,7 +100,7 @@ module.exports = {
             return medicalDAO.findCommentBy(req.params.doctorId, {from: 0, size: 2});
         }).then(function (comments) {
             doctor.comments = comments;
-            res.send({ret: 0, datat: doctor});
+            res.send({ret: 0, data: doctor});
         }).catch(function (err) {
             res.send(err);
         });
