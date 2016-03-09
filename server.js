@@ -31,7 +31,7 @@ server.use(logger());
 server.use(auth());
 router.route(server);
 server.on("uncaughtException", function (req, res, route, err) {
-    res.send(err);
+    res.send({ret: 1, data: err.message});
 });
 
 registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(function (rs) {

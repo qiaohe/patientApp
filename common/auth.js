@@ -30,7 +30,7 @@ function auth() {
             if (!reply) return res.send(403, i18n.get("token.invalid"));
             return next();
         }).catch(function (err) {
-            res.send(500, err);
+            res.send({ret:1, data: err.message});
         });
     }
 

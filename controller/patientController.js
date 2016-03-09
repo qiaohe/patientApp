@@ -120,7 +120,7 @@ module.exports = {
                 });
             });
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -191,7 +191,7 @@ module.exports = {
                 }
             });
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -224,7 +224,7 @@ module.exports = {
             });
             res.send({ret: 0, message: i18n.get('preRegistration.cancel.success')});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -240,7 +240,7 @@ module.exports = {
         }).then(function () {
             res.send({ret: 0, data: result});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -266,7 +266,7 @@ module.exports = {
                 res.send({ret: 0, data: result});
             }
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -280,7 +280,7 @@ module.exports = {
         }).then(function (doctors) {
             res.send({ret: 0, data: doctors});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -299,7 +299,7 @@ module.exports = {
             });
             res.send({ret: 0, data: hospitals});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -321,7 +321,7 @@ module.exports = {
                 res.send({ret: 0, message: '发送欢迎消息成功'});
             })
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
     },
 
@@ -336,7 +336,7 @@ module.exports = {
             });
             res.send({ret: 0, data: registrations});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
@@ -351,7 +351,7 @@ module.exports = {
         }).then(function (doctors) {
             return res.send({ret: 0, data: doctors});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
@@ -366,7 +366,7 @@ module.exports = {
             });
             res.send({ret: 0, data: cards});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -389,7 +389,7 @@ module.exports = {
             });
             return res.send({ret: 0, data: flows});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
@@ -402,7 +402,7 @@ module.exports = {
                 res.send({ret: 0, data: members[0]});
             });
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
@@ -413,13 +413,13 @@ module.exports = {
             hospitalDAO.findHospitalById(mid.split('-')[0]).then(function (hs) {
                 res.send({ret: 0, data: hs[0]});
             }).catch(function (err) {
-                res.send(err);
+                res.send({ret: 1, data: err.message});
             });
         } else {
             patientDAO.findById(mid).then(function (members) {
                 res.send({ret: 0, data: members[0]});
             }).catch(function (err) {
-                res.send(err);
+                res.send({ret: 1, data: err.message});
             });
         }
         return next();
@@ -432,7 +432,7 @@ module.exports = {
         }).then(function (members) {
             res.send({ret: 0, data: members[0]});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
@@ -478,7 +478,7 @@ module.exports = {
             cards[0].source = config.sourceType[cards[0].source];
             return res.send({ret: 0, data: cards[0]});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -494,7 +494,7 @@ module.exports = {
         }).then(function () {
             res.send({ret: 0, message: '修改绑定手机成功'});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }

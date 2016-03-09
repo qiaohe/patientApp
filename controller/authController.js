@@ -84,7 +84,7 @@ module.exports = {
                 });
             });
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     },
@@ -110,8 +110,9 @@ module.exports = {
                 res.send({ret: 0, data: user});
             });
         }).catch(function (err) {
-            res.send(err);
-        });;
+            res.send({ret: 1, data: err.message});
+        });
+        ;
         return next();
     },
 
@@ -121,7 +122,7 @@ module.exports = {
         redis.delAsync(token).then(function () {
             res.send({ret: 0, message: i18n.get('logout.success')});
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
@@ -146,7 +147,7 @@ module.exports = {
                 res.send({ret: 0, data: {uid: users[0].id, token: token}});
             });
         }).catch(function (err) {
-            res.send(err);
+            res.send({ret: 1, data: err.message});
         });
         return next();
     }
