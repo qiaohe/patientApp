@@ -93,7 +93,7 @@ module.exports = {
         var doctor = {};
         hospitalDAO.findDoctorById(req.params.doctorId).then(function (doctors) {
             doctor = doctors[0];
-            doctor.images = doctor.images && doctor.images.split(',');
+            doctor.images = doctor.images ? doctor.images.split(',') : [];
             return redis.zrankAsync(queue, req.params.doctorId);
         }).then(function (index) {
             doctor.favorited = (index != null);

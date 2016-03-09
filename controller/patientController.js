@@ -18,6 +18,7 @@ module.exports = {
         var registration = req.body;
         registration.createDate = new Date();
         registration.patientBasicInfoId = req.user.id;
+        var orderNo = {};
         patientDAO.findById(req.user.id).then(function (basicInfoIds) {
             registration.patientName = registration.patientName ? registration.patientName : basicInfoIds[0].name;
             registration.patientMobile = basicInfoIds[0].mobile;
@@ -71,7 +72,7 @@ module.exports = {
             return registrationDAO.updateShiftPlan(registration.doctorId, registration.registerDate, registration.shiftPeriod);
         }).then(function () {
             return redis.incrAsync('h:' + registration.hospitalId + ':' + moment().format('YYYYMMDD') + ':0:incr').then(function (reply) {
-                var orderNo = _.padLeft(registration.hospitalId, 4, '0') + moment().format('YYYYMMDD') + '0' + _.padLeft(reply, 3, '0');
+                orderNo = _.padLeft(registration.hospitalId, 4, '0') + moment().format('YYYYMMDD') + '0' + _.padLeft(reply, 3, '0');
                 var o = {
                     orderNo: orderNo,
                     registrationId: registration.id,
@@ -112,7 +113,9 @@ module.exports = {
                         hospitalName: registration.hospitalName,
                         departmentName: registration.departmentName,
                         doctorName: registration.doctorName, jobTtile: registration.doctorJobTtile,
-                        shiftPeriod: result[0].name
+                        shiftPeriod: result[0].name,
+                        orderNo: orderNo,
+                        registrationFee: registration.registrationFee
                     }
                 });
             });

@@ -44,7 +44,7 @@ module.exports = {
     getOrders: function (req, res, next) {
         var uid = req.user.id;
         var status = req.query.status;
-        medicalDAO.findOrders(105, status, {
+        medicalDAO.findOrders(uid, status, {
             from: +req.query.from,
             size: +req.query.size
         }).then(function (orders) {
