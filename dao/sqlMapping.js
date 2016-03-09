@@ -75,5 +75,6 @@ module.exports = {
         insertComment: 'insert Comment set ?',
         updateCommentCount: 'update Doctor set commentCount=commentCount+1 where doctorId=?',
         updateCommentStatus: 'update MedicalOrder set commented=1 where orderNo=?'
+
     }
 }
