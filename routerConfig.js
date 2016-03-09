@@ -250,5 +250,11 @@ module.exports = [
         path: "/api/orders/:orderNo/comments",
         handler: medicalController.addComment,
         secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/paymentCharge/orderNo/:orderNo/paymentType/:paymentType",
+        handler: thirdPartyController.getPaymentCharge,
+        secured: 'user'
     }
 ];

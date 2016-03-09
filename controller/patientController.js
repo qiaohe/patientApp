@@ -71,7 +71,7 @@ module.exports = {
             return registrationDAO.updateShiftPlan(registration.doctorId, registration.registerDate, registration.shiftPeriod);
         }).then(function () {
             return redis.incrAsync('h:' + registration.hospitalId + ':' + moment().format('YYYYMMDD') + ':0:incr').then(function (reply) {
-                var orderNo = registration.hospitalId + '-' + moment().format('YYYYMMDD') + '-0-' + reply;
+                var orderNo = _.padLeft(registration.hospitalId, 4, '0') + moment().format('YYYYMMDD') + '0' + _.padLeft(reply, 3, '0');
                 var o = {
                     orderNo: orderNo,
                     registrationId: registration.id,
@@ -369,8 +369,8 @@ module.exports = {
     },
 
     getCardsByHospitalId: function (req, res, next) {
-        var hospitalId = req.params.hospitalId;
-        patientDAO.findCardByHospital(hospitalId).then(function (cards) {
+        var hospitalId = req.params.id;
+        patientDAO.findCardByHospital(hospitalId, req.user.id).then(function (cards) {
             if (!cards.length) return res.send({ret: 0, data: {}});
             res.send({ret: 0, data: cards[0]});
         });

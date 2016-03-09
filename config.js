@@ -45,6 +45,10 @@ module.exports = {
         appKey: 'z3v5yqkbvtei0',
         appSecret: 'BDcA3iRjgFp'
     },
+    ping: {
+        appId: 'app_yf1SyDmT0Wj1eznT',
+        appSecret: 'sk_test_8WDC8S5W9W5GSybrT4fvfr5S'
+    },
     registrationType: ["线上预约", "线下预约", "现场挂号", "复诊预约", "转诊挂号", "现场加号", "线上加号", "销售预约", "销售加号"],
     registrationStatus: ["预约成功", "预约未支付", "预约失败", "预约变更", "预约取消"],
     transactionType: ["付款交易", '充值交易'],

@@ -6,7 +6,10 @@ var redis = require('../common/redisClient');
 var _ = require('lodash');
 var i18n = require('../i18n/localeMessage');
 var sysConfigDAO = require('../dao/sysConfig');
+var medicalDAO = require('../dao/medicalDAO');
 var qiniu = require('qiniu');
+var pingpp = require('pingpp')(config.ping.appSecret);
+pingpp.setPrivateKeyPath("./rsa_private_key.pem");
 module.exports = {
     sendSMS: function (req, res, next) {
         var smsConfig = config.sms;
@@ -39,6 +42,29 @@ module.exports = {
         res.send({
             token: putPolicy.token()
         });
+        return next();
+    },
+
+    getPaymentCharge: function (req, res, next) {
+        var orderNo = req.params.orderNo;
+        var paymentType = req.params.paymentType;
+        var remoteId = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress
+        medicalDAO.findOrdersBy(orderNo).then(function (orders) {
+            if (!orders.length) return res.send({ret: 0, data: {}});
+            pingpp.charges.create({
+                subject: config.orderType[+orders[0].type],
+                body: config.orderType[+orders[0].type],
+                amount: +orders[0].paymentAmount,
+                order_no: orderNo,
+                channel: +paymentType == 0 ? "alipay" : 'wx',
+                currency: "cny",
+                client_ip: remoteId,
+                app: {id: config.ping.appId}
+            }, function (err, charge) {
+                if (err) throw err;
+                res.send({ret: 0, data: charge});
+            });
+        })
         return next();
     }
 }

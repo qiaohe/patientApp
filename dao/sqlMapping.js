@@ -39,10 +39,11 @@ module.exports = {
         updateShiftPlan: 'update ShiftPlan set actualQuantity = actualQuantity + 1 where doctorId = ? and day =? and shiftPeriod = ?',
         updateShiftPlanDec: 'update ShiftPlan set actualQuantity = actualQuantity - 1 where doctorId = ? and day =? and shiftPeriod = ?',
         findShiftPeriodById: 'select * from ShiftPeriod where hospitalId = ? and id =?',
-        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id and paymentType =1 and patientBasicInfoId = ? order by r.id desc limit ?,?',
+        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id  and patientBasicInfoId = ? order by r.id desc limit ?,?',
         findById: 'select * from Registration where id =?',
         updateRegistration: "update Registration set ? where id = ?",
         findPeriods: 'select id from ShiftPeriod where hospitalId = ? order by name',
+        insertOrder: 'insert MedicalOrder set ?',
         findRegistrationsByDate: 'select r.*, sp.`name` as shiftPeriodName from Registration r, ShiftPeriod sp where sp.id =r.shiftPeriod AND r.registerDate >= ? and r.outpatientStatus=5'
     },
 
@@ -74,6 +75,5 @@ module.exports = {
         insertComment: 'insert Comment set ?',
         updateCommentCount: 'update Doctor set commentCount=commentCount+1 where doctorId=?',
         updateCommentStatus: 'update MedicalOrder set commented=1 where orderNo=?'
-
     }
 }
