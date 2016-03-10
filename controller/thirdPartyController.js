@@ -48,7 +48,7 @@ module.exports = {
     getPaymentCharge: function (req, res, next) {
         var orderNo = req.params.orderNo;
         var paymentType = req.params.paymentType;
-        var remoteId = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress
+        var remoteId = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         medicalDAO.findOrdersBy(orderNo).then(function (orders) {
             if (!orders.length) return res.send({ret: 0, data: {}});
             pingpp.charges.create({
