@@ -70,10 +70,10 @@ module.exports = {
         findRecipesByRegistrationId: 'select id, name, specification, quantity, unit, `usage`,dosage, dosageForm, factor from Recipe where registrationId = ?',
         findOrders: 'select m.orderNo, m.type, m.createDate, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, h.icon as hospitalIcon, m.`status`, m.amount,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod from MedicalOrder m LEFT JOIN Registration r on r.id = m.registrationId left join ShiftPeriod s on s.id = r.shiftPeriod left join Hospital h on h.id=r.hospitalId where r.patientBasicInfoId=? order by m.createDate desc limit ?,?',
         findOrdersWithStatus: 'select m.orderNo, m.type, m.createDate, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, h.icon as hospitalIcon, m.`status`, m.amount,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod from MedicalOrder m LEFT JOIN Registration r on r.id = m.registrationId left join ShiftPeriod s on s.id = r.shiftPeriod left join Hospital h on h.id=r.hospitalId where r.patientBasicInfoId=? and m.status=? order by m.createDate desc limit ?,?',
-        findOrdersBy: 'select * from MedicalOrder where orderNo =?',
-        findCommentsByDoctor: 'select uid, nickName, headPic, createDate, medicalSkill, attitude, content from `Comment` WHERE doctorId=? order by createDate desc limit ?, ?',
+        findOrdersBy: 'select m.*, r.doctorId from MedicalOrder m left join Registration r on r.id = m.registrationId where m.orderNo =?',
+        findCommentsByDoctor: 'select uid, nickName, headPic, createDate, medicalSkill, attitude, content from `Comment` where doctorId=? order by createDate desc limit ?, ?',
         insertComment: 'insert Comment set ?',
-        updateCommentCount: 'update Doctor set commentCount=commentCount+1 where doctorId=?',
+        updateCommentCount: 'update Doctor set commentCount=commentCount+1 where id=?',
         updateCommentStatus: 'update MedicalOrder set commented=1 where orderNo=?',
         findRecipesByOrderNo: 'select name, quantity, unit, totalPrice from Recipe where orderNo=?',
         findPrescriptionByOrderNo: 'select `name`, quantity, totalPrice, unit from Prescription where orderNo=?'

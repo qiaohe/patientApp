@@ -17,7 +17,7 @@ module.exports = {
             if (!hospitals) return res.send({ret: 0, data: []});
             return res.send({ret: 0, data: hospitals});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -26,7 +26,7 @@ module.exports = {
             if (!doctors) return res.send({ret: 0, data: []});
             return res.send({ret: 0, data: doctors});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -40,7 +40,7 @@ module.exports = {
             data.doctors = doctors;
             return res.send({ret: 0, data: data});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -49,7 +49,7 @@ module.exports = {
         hospitalDAO.findAll({from: req.query.from, size: req.query.size}).then(function (hospitals) {
             return res.send({ret: 0, data: hospitals});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -58,7 +58,7 @@ module.exports = {
         hospitalDAO.findDepartmentsBy(hospitalId).then(function (departments) {
             return res.send({ret: 0, data: departments});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -69,7 +69,7 @@ module.exports = {
         hospitalDAO.findDoctorsByDepartment(hospitalId, departmentId).then(function (doctors) {
             return res.send({ret: 0, data: doctors});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -84,7 +84,7 @@ module.exports = {
                 res.send({ret: 0, data: hospital});
             });
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -102,7 +102,7 @@ module.exports = {
             doctor.comments = comments;
             res.send({ret: 0, data: doctor});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -132,7 +132,7 @@ module.exports = {
             }
             res.send({ret: 0, data: result});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     }

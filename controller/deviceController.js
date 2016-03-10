@@ -16,7 +16,7 @@ module.exports = {
         }).then(function (result) {
             return res.send({ret: 0, message: i18n.get('device.add.success')})
         }).catch(function (err) {
-            return res.send({ret: 1, data: err.message})
+            return res.send({ret: 1, message: err.message})
         });
         return next();
     },

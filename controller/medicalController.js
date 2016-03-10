@@ -18,7 +18,7 @@ module.exports = {
             });
             res.send({ret: 0, data: medicalHistories});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -37,7 +37,7 @@ module.exports = {
                 res.send({ret: 0, data: recipes});
             })
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -55,7 +55,7 @@ module.exports = {
             });
             return res.send({ret: 0, data: orders});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -75,7 +75,7 @@ module.exports = {
             order.paymentType = config.paymentType[order.paymentType];
             return res.send({ret: 0, data: order});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -105,7 +105,7 @@ module.exports = {
         }).then(function () {
             res.send({ret: 0, message: '评论成功。'})
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     },
@@ -118,7 +118,7 @@ module.exports = {
         }).then(function (comments) {
             res.send({ret: 0, data: comments});
         }).catch(function (err) {
-            res.send({ret: 1, data: err.message});
+            res.send({ret: 1, message: err.message});
         });
         return next();
     }
