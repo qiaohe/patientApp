@@ -84,8 +84,8 @@ module.exports = {
         var uid = req.user.id;
         var comment = req.body;
         medicalDAO.findOrdersBy(orderNo).then(function (orders) {
-            if (!orders.length) return res.send({ret: 0, message: '订单不存在。'});
-            if (orders[0].commented) return res.send({ret: 0, message: '订单已评价。'});
+            if (!orders.length) return res.send({ret: 1, message: '订单不存在。'});
+            if (orders[0].commented) return res.send({ret: 1, message: '订单已评价。'});
             comment.doctorId = orders[0].doctorId;
             comment.hospitalId = orders[0].hospitalId;
             return patientDAO.findById(uid);
