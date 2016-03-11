@@ -398,6 +398,8 @@ module.exports = {
         patientDAO.findById(uid).then(function (members) {
             rongcloudSDK.user.getToken(members[0].id, members[0].name, members[0].headPic, function (err, resultText) {
                 members[0].rongToken = JSON.parse(resultText).token;
+                if (members[0].birthday)
+                    members[0].birthday = moment(members[0].birthday).format('YYYY-MM-DD');
                 res.send({ret: 0, data: members[0]});
             });
         }).catch(function (err) {
