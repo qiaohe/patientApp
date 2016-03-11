@@ -484,7 +484,7 @@ module.exports = {
 
     changeMobile: function (req, res, next) {
         var uid = req.user.id;
-        redis.getAsync(user.mobile).then(function (reply) {
+        redis.getAsync(req.body.mobile).then(function (reply) {
             if (!(reply && reply == req.body.certCode)) return res.send({
                 ret: 1,
                 message: i18n.get('sms.code.invalid')

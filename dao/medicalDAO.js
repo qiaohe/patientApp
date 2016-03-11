@@ -29,6 +29,10 @@ module.exports = {
     insertComment: function (comment) {
         return db.query(sqlMapping.medical.insertComment, comment);
     },
+
+    insertTransactionFlow: function (flow) {
+        db.query(sqlMapping.medical.insertTransactionFlow, flow);
+    },
     updateCommentCount: function (doctorId) {
         return db.query(sqlMapping.medical.updateCommentCount, doctorId);
     },

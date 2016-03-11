@@ -59,6 +59,7 @@ module.exports = {
                 channel: +paymentType == 0 ? "alipay" : 'wx',
                 currency: "cny",
                 client_ip: remoteId,
+                metadata: {uid: req.user.id, type: +orders[0].type},
                 app: {id: config.ping.appId}
             }, function (err, charge) {
                 if (err) throw err;
@@ -77,8 +78,22 @@ module.exports = {
             paymentType: paymentType,
             paidAmount: req.body.data.object.amount,
             paymentDate: new Date()
+        }).then(function () {
+            medicalDAO.insertTransactionFlow({
+                amount: req.body.data.object.amount,
+                name: req.body.data.object.subject,
+                transactionNo: req.body.data.object.transaction_no,
+                paymentType: paymentType,
+                orderNo: orderNo,
+                hospitalId: +(orderNo.substring(0, 4)),
+                createDate: new Date(),
+                patientBasicInfoId: req.body.data.object.metadata.uid,
+                type: req.body.data.object.metadata.type
+            })
         }).then(function (result) {
             res.send({ret: 0, data: '支付回调处理成功。'});
+        }).catch(function (err) {
+            res.send({ret: 1, message: err.message});
         });
         return next();
     }
