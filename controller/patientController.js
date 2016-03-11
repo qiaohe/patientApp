@@ -81,7 +81,6 @@ module.exports = {
                     paidAmount: 0.00,
                     paymentAmount: registration.registrationFee,
                     status: 0,
-                    paymentType: 1,
                     createDate: new Date(),
                     type: 0
                 };

@@ -66,5 +66,20 @@ module.exports = {
             });
         })
         return next();
+    },
+    handlePaymentCallback: function (req, res, next) {
+        var orderNo = req.body.data.object.order_no;
+        if (!orderNo) return res.send({ret: 0, data: '没有提供正确的支付Charge对象。'});
+        var paymentType = (req.body.data.object.channel == 'alipay' ? 0 : 1);
+        medicalDAO.updateOrder({
+            orderNo: orderNo,
+            status: 1,
+            paymentType: paymentType,
+            paidAmount: req.body.data.object.amount,
+            paymentDate: new Date()
+        }).then(function (result) {
+            res.send({ret: 0, data: '支付回调处理成功。'});
+        });
+        return next();
     }
 }

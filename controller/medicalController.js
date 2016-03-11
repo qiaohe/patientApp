@@ -65,14 +65,17 @@ module.exports = {
         var order = {};
         medicalDAO.findOrdersBy(orderNo).then(function (orders) {
             order = orders[0];
-            if (order.type == 0) return res.send({ret: 0, data: order});
+            order.status = config.orderStatus[order.status];
+            order.paymentType = order.paymentType ? config.paymentType[order.paymentType] : null;
+            if (order.type == 0) {
+                order.type = config.orderType[order.type];
+                return res.send({ret: 0, data: order});
+            }
             if (order.type == 1) return medicalDAO.findRecipesByOrderNo(orderNo);
             if (order.type == 2) return medicalDAO.findPrescriptionByOrderNo(orderNo);
         }).then(function (items) {
             order.detail = items;
-            order.status = config.orderStatus[order.status];
             order.type = config.orderType[order.type];
-            order.paymentType = config.paymentType[order.paymentType];
             return res.send({ret: 0, data: order});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});

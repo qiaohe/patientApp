@@ -37,5 +37,8 @@ module.exports = {
     },
     findCommentBy: function (doctorId, page) {
         return db.query(sqlMapping.medical.findCommentsByDoctor, [doctorId, page.from, page.size]);
+    },
+    updateOrder: function (order) {
+        return db.query(sqlMapping.medical.updateOrder, [order, order.orderNo]);
     }
 }
