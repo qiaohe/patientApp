@@ -76,6 +76,7 @@ module.exports = {
         updateCommentCount: 'update Doctor set commentCount=commentCount+1 where id=?',
         updateCommentStatus: 'update MedicalOrder set commented=1 where orderNo=?',
         findRecipesByOrderNo: 'select name, quantity, unit, totalPrice from Recipe where orderNo=?',
-        findPrescriptionByOrderNo: 'select `name`, quantity, totalPrice, unit from Prescription where orderNo=?'
+        findPrescriptionByOrderNo: 'select `name`, quantity, totalPrice, unit from Prescription where orderNo=?',
+        updateOrder: 'update MedicalOrder set ? where orderNo=?'
     }
 }

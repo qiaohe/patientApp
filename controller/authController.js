@@ -125,9 +125,7 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    }
-
-    ,
+    },
     resetPwd: function (req, res, next) {
         var that = this;
         var mobile = req.body.username;
