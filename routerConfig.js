@@ -210,7 +210,7 @@ module.exports = [
         secured: 'user'
     },
     {
-        method: "get",
+        method: "post",
         path: "/api/changeMobile",
         handler: patientController.changeMobile,
         secured: 'user'

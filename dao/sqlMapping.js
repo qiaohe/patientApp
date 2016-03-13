@@ -51,7 +51,7 @@ module.exports = {
         findByKey: 'select * from SysConfig where `key`=?'
     },
     transactionFlow: {
-        findByUid: 'select tf.amount, tf.name, tf.paymentType,tf.type,tf.createDate, h.`name` as hospitalName, h.icon as hospitalIcon from TransactionFlow tf, Hospital h WHERE tf.hospitalId = h.id and tf.patientBasicInfoId=? order by tf.createDate desc limit ?, ?'
+        findByUid: 'select tf.amount, tf.transactionNo, tf.name, tf.paymentType,tf.type,tf.createDate, h.`name` as hospitalName, h.icon as hospitalIcon from TransactionFlow tf, Hospital h WHERE tf.hospitalId = h.id and tf.patientBasicInfoId=? order by tf.createDate desc limit ?, ?'
     },
     device: {
         insert: 'insert Device set ?',
@@ -73,6 +73,7 @@ module.exports = {
         findOrdersBy: 'select m.orderNo,m.type, m.commented, m.`status`, m.paymentAmount, m.amount, m.createDate, m.hospitalId, r.doctorId, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, r.patientName, concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, m.paymentType from MedicalOrder m left join Registration r on r.id = m.registrationId left JOIN ShiftPeriod s on s.id=r.shiftPeriod where m.orderNo =?',
         findCommentsByDoctor: 'select uid, nickName, headPic, createDate, medicalSkill, attitude, content from `Comment` where doctorId=? order by createDate desc limit ?, ?',
         insertComment: 'insert Comment set ?',
+        insertTransactionFlow: 'insert TransactionFlow set ?',
         updateCommentCount: 'update Doctor set commentCount=commentCount+1 where id=?',
         updateCommentStatus: 'update MedicalOrder set commented=1 where orderNo=?',
         findRecipesByOrderNo: 'select name, quantity, unit, totalPrice from Recipe where orderNo=?',
