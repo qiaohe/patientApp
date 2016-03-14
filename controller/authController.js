@@ -132,7 +132,7 @@ module.exports = {
         var certCode = req.body.certCode;
         var newPwd = req.body.password;
         redis.getAsync(mobile).then(function (reply) {
-            if (!(reply && reply == certCode)) return res.send({ret: 0, message: i18n.get('sms.code.invalid')});
+            if (!(reply && reply == certCode)) return res.send({ret: 1, message: i18n.get('sms.code.invalid')});
             return patientDAO.update(md5(newPwd), mobile).then(function (result) {
                 return patientDAO.findByMobile(mobile);
             }).then(function (users) {

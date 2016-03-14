@@ -78,7 +78,7 @@ module.exports = {
         hospitalDAO.findHospitalById(req.params.hospitalId).then(function (hospitals) {
             if (!hospitals.length) return res.send({ret: 0, data: null});
             var hospital = hospitals[0];
-            hospital.images = hospital.images && hospital.images.split(',');
+            hospital.images = hospital.images ? hospital.images.split(',') : [];
             return redis.zrankAsync(queue, req.params.hospitalId).then(function (index) {
                 hospital.favorited = (index != null);
                 res.send({ret: 0, data: hospital});
