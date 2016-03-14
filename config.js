@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: 'localhost',
+        host: '121.42.171.213',
         port: 3001
     },
     db: {
@@ -24,7 +24,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6379
+        port: 6382
     },
     sms: {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
@@ -33,9 +33,9 @@ module.exports = {
         apikey: '410ac09436843c0270f513a0d84802cc'
     },
     qiniu: {
-        ak: "ZNrhKtanGiBCTOPg4XRD9SMOAbLzy8iREzQzUP5T",
-        sk: "L6VfXirR55Gk6mQ67Jn4pg7bksMpc-F5mghT0GK4",
-        prefix: "http://7xoadl.com2.z0.glb.qiniucdn.com/"
+        ak: "0d02DpW7tBPiN3TuZYV7WcxmN1C9aCiNZeW9fp5W",
+        sk: "7zD3aC6xpvp_DfDZ0LJhjMq6n6nB6UVDbl37C5FZ",
+        prefix: "http://7xrtp2.com2.z0.glb.qiniucdn.com/"
     },
     jpush: {
         masterSecret: "746f077c505f3195a4abf5a3",
