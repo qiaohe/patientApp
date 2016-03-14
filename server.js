@@ -66,8 +66,6 @@ registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(funct
 //        redis.set(key, String.fromCharCode(65+index))
 //    })
 //})
-
-
 server.listen(config.server.port, config.server.host, function () {
     console.log('%s listening at %s', server.name, server.url);
 });

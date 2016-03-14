@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: '121.42.171.213',
+        host: '127.0.0.1',
         port: 3001
     },
     db: {
