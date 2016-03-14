@@ -256,5 +256,10 @@ module.exports = [
         path: "/api/paymentCharge/orderNo/:orderNo/paymentType/:paymentType",
         handler: thirdPartyController.getPaymentCharge,
         secured: 'user'
+    },
+    {
+        method: "post",
+        path: "/api/payment/callback",
+        handler: thirdPartyController.handlePaymentCallback
     }
 ];
