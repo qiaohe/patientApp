@@ -29,7 +29,11 @@ module.exports = {
     },
     getNotifications: function (req, res, next) {
         var uid = req.user.id;
-        notificationDAO.findNotifications(uid, {from: +req.query.from, size: +req.query.size}).then(function (ns) {
+        var search = req.query.q;
+        notificationDAO.findNotifications(uid, {
+            from: +req.query.from,
+            size: +req.query.size
+        }, search).then(function (ns) {
             res.send({ret: 0, data: ns});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
