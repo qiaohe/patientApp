@@ -61,7 +61,7 @@ module.exports = {
         findByUid: 'select * from Device where uid=?'
     },
     notification: {
-        insert: 'insert notification set ?',
+        insert: 'insert Notification set ?',
         findAll: 'select * from Notification where uid=? order by id desc limit ?, ?'
     },
     medical: {

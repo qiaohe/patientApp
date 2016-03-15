@@ -49,7 +49,8 @@ registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(funct
                             audience: {registration_id: [tokens[0].token]},
                             patientName: r.patientName,
                             patientMobile: r.patientMobile,
-                            uid: r.patientBasicInfoId
+                            uid: r.patientBasicInfoId,
+                            type:1
                         }, function (err, result) {
                             if (err) throw err;
                         });

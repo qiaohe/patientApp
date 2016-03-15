@@ -66,15 +66,13 @@ module.exports = {
         medicalDAO.findOrdersBy(orderNo).then(function (orders) {
             order = orders[0];
             order.status = config.orderStatus[order.status];
-            order.paymentType = order.paymentType ? config.paymentType[order.paymentType] : null;
-            if (order.type == 0) {
-                order.type = config.orderType[order.type];
-                return res.send({ret: 0, data: order});
-            }
+            order.paymentType = order.paymentType != null ? config.paymentType[+order.paymentType] : null;
             if (order.type == 1) return medicalDAO.findRecipesByOrderNo(orderNo);
             if (order.type == 2) return medicalDAO.findPrescriptionByOrderNo(orderNo);
         }).then(function (items) {
-            order.detail = items;
+            if (order.type == 1 && order.type == 2) {
+                order.detail = items;
+            }
             order.type = config.orderType[order.type];
             return res.send({ret: 0, data: order});
         }).catch(function (err) {

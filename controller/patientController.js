@@ -20,7 +20,7 @@ module.exports = {
         registration.patientBasicInfoId = req.user.id;
         var orderNo = {};
         patientDAO.findById(req.user.id).then(function (basicInfoIds) {
-            registration.patientName = registration.patientName ? registration.patientName : basicInfoIds[0].name;
+            registration.patientName = registration.patientName ? registration.patientName : basicInfoIds[0].realName;
             registration.patientMobile = basicInfoIds[0].mobile;
             registration.gender = basicInfoIds[0].gender;
             return hospitalDAO.findDoctorById(registration.doctorId);
@@ -99,7 +99,8 @@ module.exports = {
                         audience: {registration_id: [tokens[0].token]},
                         patientName: registration.patientName,
                         patientMobile: registration.patientMobile,
-                        uid: req.user.id
+                        uid: req.user.id,
+                        type: 0
                     }, function (err, result) {
                         if (err) throw err;
                     });
@@ -173,7 +174,8 @@ module.exports = {
                         audience: {registration_id: [tokens[0].token]},
                         patientName: registration.patientName,
                         patientMobile: registration.patientMobile,
-                        uid: req.user.id
+                        uid: req.user.id,
+                        type: 0
                     }, function (err, result) {
                         if (err) throw err;
                     });
@@ -214,7 +216,8 @@ module.exports = {
                             audience: {registration_id: [tokens[0].token]},
                             patientName: registration.patientName,
                             patientMobile: registration.patientMobile,
-                            uid: req.user.id
+                            uid: req.user.id,
+                            type: 0
                         }, function (err, result) {
                             if (err) throw err;
                         });
