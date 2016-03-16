@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: '127.0.0.1',
+        host: '121.42.171.213',
         port: 3001
     },
     db: {
@@ -24,7 +24,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6379
+        port: 6382
     },
     sms: {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
@@ -60,6 +60,7 @@ module.exports = {
     cashbackType: ['赠劵', '优惠券', '免单'],
     paymentType: ['支付宝', '微信支付', '会员卡支付', '银行卡', '储值卡', '现金', '代付'],
     consumptionLevel: ['<1000', '1000~3000', '3000~5000', '5000~10000', '>10000'],
+    preRegistrationTemplate:'【%s】 ，您预约挂号成功，请在30分钟内完成支付，逾时自动取消',
     registrationNotificationTemplate: '【%s】，您已预约【%s医生】门诊，就诊时间%s。请提前半小时到分诊台，进行取号确认。',
     changeRegistrationTemplate: '【%s】，您已改约【%s医生】门诊，就诊时间%s。请提前半小时到分诊台，进行取号确认。',
     cancelRegistrationTemplate: '【%s】，您已取消预约【%s医生】%s门诊，如有需要请再次预约，谢谢！',

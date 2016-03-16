@@ -7,9 +7,14 @@ var _ = require('lodash');
 var i18n = require('../i18n/localeMessage');
 var sysConfigDAO = require('../dao/sysConfig');
 var medicalDAO = require('../dao/medicalDAO');
+var registrationDAO = require('../dao/registrationDAO');
+var deviceDAO = require('../dao/deviceDAO');
 var qiniu = require('qiniu');
+var pusher = require('../domain/NotificationPusher');
 var pingpp = require('pingpp')(config.ping.appSecret);
 pingpp.setPrivateKeyPath("./rsa_private_key.pem");
+var util = require('util');
+var moment = require('moment');
 module.exports = {
     sendSMS: function (req, res, next) {
         var smsConfig = config.sms;
@@ -61,19 +66,20 @@ module.exports = {
                 channel: +paymentType == 0 ? "alipay" : 'wx',
                 currency: "cny",
                 client_ip: remoteId,
-                metadata: {uid: req.user.id, type: +orders[0].type},
+                metadata: {uid: req.user.id, type: +orders[0].type, rid: +orders[0].registrationId},
                 app: {id: config.ping.appId}
             }, function (err, charge) {
                 if (err) throw err;
                 res.send({ret: 0, data: charge});
             });
-        })
+        });
         return next();
     },
     handlePaymentCallback: function (req, res, next) {
         var orderNo = req.body.data.object.order_no;
         if (!orderNo) return res.send({ret: 0, data: '没有提供正确的支付Charge对象。'});
         var paymentType = (req.body.data.object.channel == 'alipay' ? 0 : 1);
+        var registration = {};
         medicalDAO.updateOrder({
             orderNo: orderNo,
             status: 1,
@@ -93,6 +99,35 @@ module.exports = {
                 type: req.body.data.object.metadata.type
             })
         }).then(function (result) {
+            return registrationDAO.findRegistrationById(req.body.data.object.metadata.rid);
+        }).then(function (registrations) {
+            registration = registrations[0];
+            return redis.incrAsync('doctor:' + registration.doctorId + ':d:' + registration.registerDate + ':period:' + registration.shiftPeriod + ':incr').then(function (seq) {
+                return redis.getAsync('h:' + registration.hospitalId + ':p:' + registration.shiftPeriod).then(function (sp) {
+                    registration.sequence = sp + seq;
+                    return registrationDAO.updateRegistration({id: registration.id, sequence: registration.sequence});
+                });
+            });
+        }).then(function () {
+            return registrationDAO.findShiftPeriodById(registration.hospitalId, registration.shiftPeriod);
+        }).then(function (result) {
+            deviceDAO.findTokenByUid(registration.patientBasicInfoId).then(function (tokens) {
+                if (tokens.length && tokens[0]) {
+                    var notificationBody = util.format(config.registrationNotificationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                        registration.hospitalName + registration.departmentName + registration.doctorName, moment(registration.registerDate).format('YYYY-MM-DD') + ' ' + result[0].name);
+                    pusher.push({
+                        body: notificationBody,
+                        title: '支付成功',
+                        audience: {registration_id: [tokens[0].token]},
+                        patientName: registration.patientName,
+                        patientMobile: registration.patientMobile,
+                        uid: registration.patientBasicInfoId,
+                        type: 0
+                    }, function (err, result) {
+                        if (err) throw err;
+                    });
+                }
+            });
             res.send({ret: 0, data: '支付回调处理成功。'});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});

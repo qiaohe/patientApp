@@ -53,7 +53,7 @@ module.exports = {
 
     findShiftPlans: function (doctorId, start) {
         var end = moment(start).add(1, 'w').format('YYYY-MM-DD');
-        return db.query(sqlMapping.doctor.findShitPlans, [doctorId, start, end]);
+        return db.query(sqlMapping.doctor.findShitPlans, [doctorId, start, end, doctorId]);
     },
 
     findTransactionFlowsByUid: function (uid, from, size) {

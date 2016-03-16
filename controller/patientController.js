@@ -61,12 +61,7 @@ module.exports = {
                 });
             }
         }).then(function () {
-            return redis.incrAsync('doctor:' + registration.doctorId + ':d:' + registration.registerDate + ':period:' + registration.shiftPeriod + ':incr').then(function (seq) {
-                return redis.getAsync('h:' + registration.hospitalId + ':p:' + registration.shiftPeriod).then(function (sp) {
-                    registration.sequence = sp + seq;
-                    return registrationDAO.insert(registration);
-                });
-            });
+            return registrationDAO.insert(registration);
         }).then(function (result) {
             registration.id = result.insertId;
             return registrationDAO.updateShiftPlan(registration.doctorId, registration.registerDate, registration.shiftPeriod);
@@ -91,11 +86,10 @@ module.exports = {
         }).then(function (result) {
             deviceDAO.findTokenByUid(req.user.id).then(function (tokens) {
                 if (tokens.length && tokens[0]) {
-                    var notificationBody = util.format(config.registrationNotificationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
-                        registration.hospitalName + registration.departmentName + registration.doctorName, registration.registerDate + ' ' + result[0].name);
+                    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'));
                     pusher.push({
                         body: notificationBody,
-                        title: '预约成功',
+                        title: '生成订单',
                         audience: {registration_id: [tokens[0].token]},
                         patientName: registration.patientName,
                         patientMobile: registration.patientMobile,

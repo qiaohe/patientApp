@@ -30,7 +30,7 @@ module.exports = {
     doctor: {
         findByDepartment: 'select id, name, departmentName, hospitalName, headPic,registrationFee, speciality,jobTitle from Doctor where hospitalId = ?  and departmentId = ?',
         findById: 'select id, name, departmentName,hospitalId, hospitalName, headPic,registrationFee, speciality,introduction, images,jobTitle, departmentId, jobTitleId,commentCount from Doctor where id =?',
-        findShitPlans: 'select p.`name` as period, `day`, actualQuantity, plannedQuantity, p.id as periodId from ShiftPlan sp, ShiftPeriod p where sp.shiftPeriod = p.id and sp.doctorId = ? and sp.day>? and sp.day<=? and sp.actualQuantity < sp.plannedQuantity and sp.plannedQuantity > 0 order by sp.day, sp.shiftPeriod',
+        findShitPlans: 'select p.`name` as period, `day`, actualQuantity, plannedQuantity, p.id as periodId from ShiftPlan sp, ShiftPeriod p where sp.shiftPeriod = p.id and sp.doctorId = ? and sp.day>? and sp.day<=? and sp.actualQuantity < sp.plannedQuantity and sp.plannedQuantity > 0 and p.id not in (select shiftPeriod from Registration where doctorId=? and registerDate=sp.`day`) order by sp.day, sp.shiftPeriod',
         findBy: 'select id, name, departmentName,hospitalId, hospitalName, headPic,registrationFee, speciality,jobTitle from Doctor where departmentId=? and registrationFee=?'
     },
 
@@ -39,7 +39,7 @@ module.exports = {
         updateShiftPlan: 'update ShiftPlan set actualQuantity = actualQuantity + 1 where doctorId = ? and day =? and shiftPeriod = ?',
         updateShiftPlanDec: 'update ShiftPlan set actualQuantity = actualQuantity - 1 where doctorId = ? and day =? and shiftPeriod = ?',
         findShiftPeriodById: 'select * from ShiftPeriod where hospitalId = ? and id =?',
-        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id  and patientBasicInfoId = ? order by r.id desc limit ?,?',
+        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id and patientBasicInfoId = ? and r.sequence is not NULL order by r.id desc limit ?,?',
         findById: 'select * from Registration where id =?',
         updateRegistration: "update Registration set ? where id = ?",
         findPeriods: 'select id from ShiftPeriod where hospitalId = ? order by name',
@@ -70,7 +70,7 @@ module.exports = {
         findRecipesByRegistrationId: 'select id, name, specification, quantity, unit, `usage`,dosage, dosageForm, factor from Recipe where registrationId = ?',
         findOrders: 'select m.orderNo, m.type, m.createDate, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, h.icon as hospitalIcon, m.`status`, m.amount,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod from MedicalOrder m LEFT JOIN Registration r on r.id = m.registrationId left join ShiftPeriod s on s.id = r.shiftPeriod left join Hospital h on h.id=r.hospitalId where r.patientBasicInfoId=? order by m.createDate desc limit ?,?',
         findOrdersWithStatus: 'select m.orderNo, m.type, m.createDate, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, h.icon as hospitalIcon, m.`status`, m.amount,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod from MedicalOrder m LEFT JOIN Registration r on r.id = m.registrationId left join ShiftPeriod s on s.id = r.shiftPeriod left join Hospital h on h.id=r.hospitalId where r.patientBasicInfoId=? and m.status=? order by m.createDate desc limit ?,?',
-        findOrdersBy: 'select m.orderNo,m.type, m.commented, m.`status`, m.paymentAmount, m.amount, m.createDate, m.hospitalId, r.doctorId, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, r.patientName, concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, m.paymentType from MedicalOrder m left join Registration r on r.id = m.registrationId left JOIN ShiftPeriod s on s.id=r.shiftPeriod where m.orderNo =?',
+        findOrdersBy: 'select m.orderNo,m.type, m.commented, m.`status`, m.paymentAmount, m.amount, m.createDate, m.hospitalId,m.registrationId, r.doctorId, r.doctorName, r.departmentName, r.hospitalName,r.hospitalId, r.patientName, concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, m.paymentType from MedicalOrder m left join Registration r on r.id = m.registrationId left JOIN ShiftPeriod s on s.id=r.shiftPeriod where m.orderNo =?',
         findCommentsByDoctor: 'select uid, nickName, headPic, createDate, medicalSkill, attitude, content from `Comment` where doctorId=? order by createDate desc limit ?, ?',
         insertComment: 'insert Comment set ?',
         insertTransactionFlow: 'insert TransactionFlow set ?',
