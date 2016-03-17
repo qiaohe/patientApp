@@ -95,6 +95,7 @@ module.exports = {
         patientDAO.findByMobile(userName).then(function (users) {
             if (!users || !users.length) return res.send({ret: 1, message: i18n.get('member.not.exists')});
             var user = users[0];
+            if (user.birthday != null) user.birthday = moment(user.birthday).format('YYYY-MM-DD');
             if (user.password != md5(password)) return res.send({
                 ret: 1, message: i18n.get('member.password.error')
             });
@@ -112,7 +113,6 @@ module.exports = {
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
         });
-        ;
         return next();
     },
 

@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: '121.42.171.213',
+        host: 'localhost',
         port: 3001
     },
     db: {
@@ -14,6 +14,7 @@ module.exports = {
         password: 'heqiao75518',
         debug: false,
         multipleStatements: true,
+        timezone: 'utc',
         database: 'medicalDB'
     },
     app: {
@@ -24,7 +25,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6382
+        port: 6379
     },
     sms: {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',

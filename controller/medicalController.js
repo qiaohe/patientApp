@@ -70,7 +70,7 @@ module.exports = {
             if (order.type == 1) return medicalDAO.findRecipesByOrderNo(orderNo);
             if (order.type == 2) return medicalDAO.findPrescriptionByOrderNo(orderNo);
         }).then(function (items) {
-            if (order.type == 1 && order.type == 2) {
+            if (order.type == 1 || order.type == 2) {
                 order.detail = items;
             }
             order.type = config.orderType[order.type];
@@ -80,6 +80,8 @@ module.exports = {
         });
         return next();
     },
+
+
     addComment: function (req, res, next) {
         var orderNo = req.params.orderNo;
         var uid = req.user.id;

@@ -31,7 +31,7 @@ module.exports = {
     },
 
     insertTransactionFlow: function (flow) {
-        db.query(sqlMapping.medical.insertTransactionFlow, flow);
+        return db.query(sqlMapping.medical.insertTransactionFlow, flow);
     },
     updateCommentCount: function (doctorId) {
         return db.query(sqlMapping.medical.updateCommentCount, doctorId);

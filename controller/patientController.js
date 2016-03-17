@@ -429,6 +429,8 @@ module.exports = {
         patientDAO.updateByUid(req.body).then(function (result) {
             return patientDAO.findById(req.user.id);
         }).then(function (members) {
+            if (members[0].birthday)
+                members[0].birthday = moment(members[0].birthday).format('YYYY-MM-DD');
             res.send({ret: 0, data: members[0]});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
@@ -511,17 +513,22 @@ module.exports = {
                 paymentDate: new Date()
             });
         }).then(function () {
+            return medicalDAO.findOrdersBy(payObject.orderNo);
+        }).then(function (orders) {
+            var order = orders[0];
             medicalDAO.insertTransactionFlow({
-                amount: payObject.amount,
-                name: req.body.data.object.subject,
-                transactionNo: req.body.data.object.transaction_no,
-                paymentType: paymentType,
-                orderNo: orderNo,
-                hospitalId: +(orderNo.substring(0, 4)),
+                amount: payObject.paymentAmount,
+                name: config.orderType[order.type],
+                transactionNo: moment().format('YYYYMMDDhhmmss') + '-' + order.hospitalId + '-' + order.patientId,
+                paymentType: 2,
+                orderNo: payObject.orderNo,
+                hospitalId: +(payObject.orderNo.substring(0, 4)),
                 createDate: new Date(),
-                patientBasicInfoId: req.body.data.object.metadata.uid,
-                type: req.body.data.object.metadata.type
+                patientBasicInfoId: req.user.id,
+                type: 0
             })
+        }).then(function (result) {
+            res.send({ret: 0, message: '支付成功。'});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
         });

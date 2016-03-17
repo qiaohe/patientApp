@@ -274,6 +274,7 @@ module.exports = [
     {
         method: "post",
         path: "/api/payment/card",
-        handler: patientController.payByMemberCard
+        handler: patientController.payByMemberCard,
+        secured: 'user'
     }
 ];
