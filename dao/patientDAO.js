@@ -30,5 +30,8 @@ module.exports = {
     },
     findCardByHospital: function (hospitalId, uid) {
         return db.query(sqlMapping.patient.findCardByHospital, [hospitalId, uid]);
+    },
+    updateBalance: function (amount, memberCardNo) {
+        return db.query(sqlMapping.patient.updatePatientBalance, [amount, memberCardNo]);
     }
 }

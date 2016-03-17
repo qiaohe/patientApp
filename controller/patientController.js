@@ -6,6 +6,7 @@ var registrationDAO = require('../dao/registrationDAO');
 var hospitalDAO = require('../dao/hospitalDAO');
 var patientDAO = require('../dao/patientDAO');
 var deviceDAO = require('../dao/deviceDAO');
+var medicalDAO = require('../dao/medicalDAO');
 var _ = require('lodash');
 var moment = require('moment');
 var Promise = require('bluebird');
@@ -495,5 +496,35 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
+    },
+    payByMemberCard: function (req, res, next) {
+        var payObject = req.body;
+        redis.getAsync(payObject.mobile).then(function (reply) {
+            if (!(reply && reply == payObject.certCode)) throw new Error(i18n.get('sms.code.invalid'));
+            return patientDAO.updateBalance(payObject.paymentAmount, payObject.memberCardNo);
+        }).then(function (result) {
+            return medicalDAO.updateOrder({
+                orderNo: payObject.orderNo,
+                status: 1,
+                paymentType: 2,
+                paidAmount: payObject.paymentAmount,
+                paymentDate: new Date()
+            });
+        }).then(function () {
+            medicalDAO.insertTransactionFlow({
+                amount: payObject.amount,
+                name: req.body.data.object.subject,
+                transactionNo: req.body.data.object.transaction_no,
+                paymentType: paymentType,
+                orderNo: orderNo,
+                hospitalId: +(orderNo.substring(0, 4)),
+                createDate: new Date(),
+                patientBasicInfoId: req.body.data.object.metadata.uid,
+                type: req.body.data.object.metadata.type
+            })
+        }).catch(function (err) {
+            res.send({ret: 1, message: err.message});
+        });
+        return next()
     }
 }

@@ -270,5 +270,10 @@ module.exports = [
         method: "post",
         path: "/api/payment/callback",
         handler: thirdPartyController.handlePaymentCallback
+    },
+    {
+        method: "post",
+        path: "/api/payment/card",
+        handler: patientController.payByMemberCard
     }
 ];
