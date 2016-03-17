@@ -18,7 +18,8 @@ module.exports = [
     {
         method: "post",
         path: "/api/logout",
-        handler: authController.logout
+        handler: authController.logout,
+        secured: "user"
     },
     {
         method: "post",
@@ -33,32 +34,38 @@ module.exports = [
     {
         method: "get",
         path: "/api/hospitals/search",
-        handler: hospitalController.searchHospital
+        handler: hospitalController.searchHospital,
+        secured: "user"
     },
     {
         method: "get",
         path: "/api/hospitals",
-        handler: hospitalController.getHospitals
+        handler: hospitalController.getHospitals,
+        secured: "user"
     },
     {
         method: "get",
         path: "/api/doctors/search",
-        handler: hospitalController.searchDoctor
+        handler: hospitalController.searchDoctor,
+        secured: "user"
     },
     {
         method: "get",
         path: "/api/search",
-        handler: hospitalController.search
+        handler: hospitalController.search,
+        secured: "user"
     },
     {
         method: "get",
         path: "/api/hospitals/:hospitalId/departments",
-        handler: hospitalController.getDepartments
+        handler: hospitalController.getDepartments,
+        secured: "user"
     },
     {
         method: "get",
         path: "/api/hospitals/:hospitalId/departments/:departmentId/doctors",
-        handler: hospitalController.getDoctorsByDepartment
+        handler: hospitalController.getDoctorsByDepartment,
+        secured: "user"
     },
     {
         method: "get",
@@ -75,12 +82,14 @@ module.exports = [
     {
         method: "get",
         path: "/api/ad/images",
-        handler: thirdPartyController.getAdImages
+        handler: thirdPartyController.getAdImages,
+        secured: "user"
     },
     {
         method: "get",
         path: "/api/doctors/:doctorId/shiftPlans",
-        handler: hospitalController.getShitPlan
+        handler: hospitalController.getShitPlan,
+        secured: "user"
     },
     {
         method: "post",

@@ -110,7 +110,7 @@ module.exports = {
     getShitPlan: function (req, res, next) {
         var doctorId = req.params.doctorId;
         var start = req.query.d;
-        hospitalDAO.findShiftPlans(doctorId, start).then(function (plans) {
+        hospitalDAO.findShiftPlans(doctorId, start, req.user.id).then(function (plans) {
             var data = _.groupBy(plans, function (plan) {
                 moment.locale('zh_CN');
                 return moment(plan.day).format('YYYY-MM-DD dddd');

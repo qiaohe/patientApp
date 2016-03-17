@@ -51,9 +51,9 @@ module.exports = {
         return db.query(sqlMapping.doctor.findById, doctorId);
     },
 
-    findShiftPlans: function (doctorId, start) {
+    findShiftPlans: function (doctorId, start, uid) {
         var end = moment(start).add(1, 'w').format('YYYY-MM-DD');
-        return db.query(sqlMapping.doctor.findShitPlans, [doctorId, start, end, doctorId]);
+        return db.query(sqlMapping.doctor.findShitPlans, [+doctorId, start, end, +doctorId, +uid]);
     },
 
     findTransactionFlowsByUid: function (uid, from, size) {
