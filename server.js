@@ -1,6 +1,7 @@
 'use strict';
 var restify = require('restify');
 var config = require('./config');
+var redis = require('./common/redisClient');
 var router = require('./common/router');
 var auth = require('./common/auth');
 var logger = require('./common/logger');
@@ -50,7 +51,8 @@ registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(funct
                             patientName: r.patientName,
                             patientMobile: r.patientMobile,
                             uid: r.patientBasicInfoId,
-                            type:1
+                            type: 1,
+                            hospitalId: rs[0].hospitalId
                         }, function (err, result) {
                             if (err) throw err;
                         });
@@ -61,12 +63,12 @@ registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(funct
     })
 });
 
-//registrationDAO.findPeriods(1).then(function (periods) {
-//    periods.forEach(function (item, index) {
-//        var key = 'h:' + 1 + ':p:' + item.id;
-//        redis.set(key, String.fromCharCode(65+index))
-//    })
-//})
+registrationDAO.findPeriods(1).then(function (periods) {
+    periods.forEach(function (item, index) {
+        var key = 'h:' + 1 + ':p:' + item.id;
+        redis.set(key, String.fromCharCode(65+index))
+    })
+});
 server.listen(config.server.port, config.server.host, function () {
     console.log('%s listening at %s', server.name, server.url);
 });

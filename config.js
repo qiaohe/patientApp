@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: 'localhost',
+        host: '121.42.171.213',
         port: 3001
     },
     db: {
@@ -14,13 +14,14 @@ module.exports = {
         password: 'heqiao75518',
         debug: false,
         multipleStatements: true,
-        timezone: 'utc',
+        dateStrings: true,
         database: 'medicalDB'
     },
     app: {
         locale: 'zh_CN',
         tokenSecret: '1~a',
         tokenExpire: 86400,
+        dateStrings:'true',
         welcomeMessage: '欢迎来到:hospital！'
     },
     redis: {

@@ -95,7 +95,8 @@ module.exports = {
                         patientName: registration.patientName,
                         patientMobile: registration.patientMobile,
                         uid: req.user.id,
-                        type: 0
+                        type: 0,
+                        hospitalId: registration.hospitalId
                     }, function (err, result) {
                         if (err) throw err;
                     });
@@ -170,7 +171,8 @@ module.exports = {
                         patientName: registration.patientName,
                         patientMobile: registration.patientMobile,
                         uid: req.user.id,
-                        type: 0
+                        type: 0,
+                        hospitalId: registration.hospitalId
                     }, function (err, result) {
                         if (err) throw err;
                     });
@@ -212,7 +214,8 @@ module.exports = {
                             patientName: registration.patientName,
                             patientMobile: registration.patientMobile,
                             uid: req.user.id,
-                            type: 0
+                            type: 0,
+                            hospitalId: registration.hospitalId
                         }, function (err, result) {
                             if (err) throw err;
                         });
@@ -501,6 +504,7 @@ module.exports = {
     },
     payByMemberCard: function (req, res, next) {
         var payObject = req.body;
+        var order = {};
         redis.getAsync(payObject.mobile).then(function (reply) {
             if (!(reply && reply == payObject.certCode)) throw new Error(i18n.get('sms.code.invalid'));
             return patientDAO.updateBalance(payObject.paymentAmount, payObject.memberCardNo);
@@ -515,8 +519,8 @@ module.exports = {
         }).then(function () {
             return medicalDAO.findOrdersBy(payObject.orderNo);
         }).then(function (orders) {
-            var order = orders[0];
-            medicalDAO.insertTransactionFlow({
+            order = orders[0];
+            return medicalDAO.insertTransactionFlow({
                 amount: payObject.paymentAmount,
                 name: config.orderType[order.type],
                 transactionNo: moment().format('YYYYMMDDhhmmss') + '-' + order.hospitalId + '-' + order.patientId,
@@ -528,6 +532,34 @@ module.exports = {
                 type: 0
             })
         }).then(function (result) {
+            registrationDAO.findRegistrationById(order.rid).then(function (registartions) {
+                var registration = registartions[0];
+                deviceDAO.findTokenByUid(registration.patientBasicInfoId).then(function (tokens) {
+                    if (tokens.length && tokens[0]) {
+                        var notificationBody = {};
+                        if (req.body.data.object.metadata.type == 0) {
+                            notificationBody = util.format(config.registrationNotificationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                                registration.hospitalName + registration.departmentName + registration.doctorName, moment(registration.registerDate).format('YYYY-MM-DD') + ' ' + result[0].name);
+                        } else if (req.body.data.object.metadata.type == 1) {
+                            notificationBody = '您好，支付成功！请及时取药！';
+                        } else if (req.body.data.object.metadata.type == 2) {
+                            notificationBody = '您好，支付成功！请及时就诊！';
+                        }
+                        pusher.push({
+                            body: notificationBody,
+                            title: '支付成功',
+                            audience: {registration_id: [tokens[0].token]},
+                            patientName: registration.patientName,
+                            patientMobile: registration.patientMobile,
+                            uid: registration.patientBasicInfoId,
+                            type: 0,
+                            hospitalId: registration.hospitalId
+                        }, function (err, result) {
+                            if (err) throw err;
+                        });
+                    }
+                });
+            });
             res.send({ret: 0, message: '支付成功。'});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});

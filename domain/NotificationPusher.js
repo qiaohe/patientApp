@@ -21,7 +21,8 @@ module.exports = {
                     uid: notification.uid,
                     patientName: notification.patientName,
                     patientMobile: notification.patientMobile,
-                    type: notification.type
+                    type: notification.type,
+                    hospitalId: notification.hospitalId
                 }).then(function (result) {
                     return callback(err, result);
                 })
