@@ -14,6 +14,7 @@ var pusher = require('../domain/NotificationPusher');
 var util = require('util');
 var rongcloudSDK = require('rongcloud-sdk');
 rongcloudSDK.init(config.rongcloud.appKey, config.rongcloud.appSecret);
+var queue = require('../common/queue');
 module.exports = {
     preRegistration: function (req, res, next) {
         var registration = req.body;
@@ -80,6 +81,12 @@ module.exports = {
                     createDate: new Date(),
                     type: 0
                 };
+                var job = queue.create('orderPayDelayedQueue', {
+                    title: '订单延迟支付',
+                    orderNo: orderNo
+                }).delay(config.app.orderDelayMinutes * 60 * 1000).save(function (err) {
+                    if (!err) console.log(job.id);
+                });
                 return registrationDAO.insertOrder(o);
             });
         }).then(function () {
@@ -87,7 +94,7 @@ module.exports = {
         }).then(function (result) {
             deviceDAO.findTokenByUid(req.user.id).then(function (tokens) {
                 if (tokens.length && tokens[0]) {
-                    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'));
+                    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'), registration.hospitalName, orderNo);
                     pusher.push({
                         body: notificationBody,
                         title: '生成订单',
@@ -532,22 +539,35 @@ module.exports = {
                 type: 0
             })
         }).then(function (result) {
-            registrationDAO.findRegistrationById(order.rid).then(function (registartions) {
-                var registration = registartions[0];
+            registrationDAO.findRegistrationById(order.rid).then(function (registrations) {
+                var registration = registrations[0];
                 deviceDAO.findTokenByUid(registration.patientBasicInfoId).then(function (tokens) {
                     if (tokens.length && tokens[0]) {
                         var notificationBody = {};
                         if (req.body.data.object.metadata.type == 0) {
                             notificationBody = util.format(config.registrationNotificationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
                                 registration.hospitalName + registration.departmentName + registration.doctorName, moment(registration.registerDate).format('YYYY-MM-DD') + ' ' + result[0].name);
-                        } else if (req.body.data.object.metadata.type == 1) {
-                            notificationBody = '您好，支付成功！请及时取药！';
-                        } else if (req.body.data.object.metadata.type == 2) {
-                            notificationBody = '您好，支付成功！请及时就诊！';
+                            pusher.push({
+                                body: notificationBody,
+                                title: '预约挂号成功',
+                                audience: {registration_id: [tokens[0].token]},
+                                patientName: registration.patientName,
+                                patientMobile: registration.patientMobile,
+                                uid: registration.patientBasicInfoId,
+                                type: 0,
+                                hospitalId: registration.hospitalId
+                            }, function (err, result) {
+                                if (err) throw err;
+                            });
                         }
+                        var template = config.preRegistrationPaymentSuccessTemplate;
+                        if (req.body.data.object.metadata.type == 1) template = config.recipePaymentSuccessTemplate;
+                        if (req.body.data.object.metadata.type == 2) template = config.preRegistrationPaymentSuccessTemplate;
+                        notificationBody = util.format(template, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                            registration.hospitalName + registration.departmentName + registration.doctorName, config.orderType[req.body.data.object.metadata.type] + '订单' + orderNo, req.body.data.object.amount);
                         pusher.push({
                             body: notificationBody,
-                            title: '支付成功',
+                            title: '订单支付成功',
                             audience: {registration_id: [tokens[0].token]},
                             patientName: registration.patientName,
                             patientMobile: registration.patientMobile,

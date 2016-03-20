@@ -8,7 +8,7 @@ module.exports = {
         client.push().setPlatform(JPush.ALL)
             .setAudience(notification.audience ? notification.audience : JPush.ALL).
             setNotification(notification.body, JPush.ios(notification.title, 'default'), JPush.android(notification.body, notification.title, 1, notification.extra))
-            .setOptions(null, null, null, false, null)
+            .setOptions(null, null, null, true, null)
             .send(function (err, response) {
                 if (err) throw err;
                 notificationDAO.insert({

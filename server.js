@@ -11,6 +11,7 @@ var registrationDAO = require('./dao/registrationDAO');
 var deviceDAO = require('./dao/deviceDAO');
 var moment = require('moment');
 var util = require('util');
+var queue = require('./common/queue');
 var pusher = require('./domain/NotificationPusher');
 restify.CORS.ALLOW_HEADERS.push('Access-Control-Allow-Origin');
 server.use(restify.CORS());
@@ -66,8 +67,15 @@ registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(funct
 registrationDAO.findPeriods(1).then(function (periods) {
     periods.forEach(function (item, index) {
         var key = 'h:' + 1 + ':p:' + item.id;
-        redis.set(key, String.fromCharCode(65+index))
+        redis.set(key, String.fromCharCode(65 + index))
     })
+});
+queue.process('orderPayDelayedQueue', function (job, done) {
+    var orderNo = job.data.orderNo;
+    queue.processCallback(orderNo, function (err, result) {
+        if (err) throw err;
+        console.log('Job', job.id, 'is done' + job.orderNo);
+    });
 });
 server.listen(config.server.port, config.server.host, function () {
     console.log('%s listening at %s', server.name, server.url);
