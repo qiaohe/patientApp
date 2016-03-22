@@ -117,14 +117,27 @@ module.exports = {
                     if (req.body.data.object.metadata.type == 0) {
                         notificationBody = util.format(config.registrationNotificationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
                             registration.hospitalName + registration.departmentName + registration.doctorName, moment(registration.registerDate).format('YYYY-MM-DD') + ' ' + result[0].name);
-                    } else if (req.body.data.object.metadata.type == 1) {
-                        notificationBody = '您好，支付成功！请及时取药！';
-                    } else if (req.body.data.object.metadata.type == 2) {
-                        notificationBody = '您好，支付成功！请及时就诊！';
+                        pusher.push({
+                            body: notificationBody,
+                            title: '预约挂号成功',
+                            audience: {registration_id: [tokens[0].token]},
+                            patientName: registration.patientName,
+                            patientMobile: registration.patientMobile,
+                            uid: registration.patientBasicInfoId,
+                            type: 0,
+                            hospitalId: registration.hospitalId
+                        }, function (err, result) {
+                            if (err) throw err;
+                        });
                     }
+                    var template = config.preRegistrationPaymentSuccessTemplate;
+                    if (req.body.data.object.metadata.type == 1) template = config.recipePaymentSuccessTemplate;
+                    if (req.body.data.object.metadata.type == 2) template = config.preRegistrationPaymentSuccessTemplate;
+                    notificationBody = util.format(template, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                        registration.hospitalName + registration.departmentName + registration.doctorName, config.orderType[req.body.data.object.metadata.type] + '订单' + orderNo, req.body.data.object.amount);
                     pusher.push({
                         body: notificationBody,
-                        title: '支付成功',
+                        title: '订单支付成功',
                         audience: {registration_id: [tokens[0].token]},
                         patientName: registration.patientName,
                         patientMobile: registration.patientMobile,
