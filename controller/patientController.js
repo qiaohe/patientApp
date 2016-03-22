@@ -7,6 +7,7 @@ var hospitalDAO = require('../dao/hospitalDAO');
 var patientDAO = require('../dao/patientDAO');
 var deviceDAO = require('../dao/deviceDAO');
 var medicalDAO = require('../dao/medicalDAO');
+var notificationDAO = require('../dao/notificationDAO');
 var _ = require('lodash');
 var moment = require('moment');
 var Promise = require('bluebird');
@@ -565,5 +566,23 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next()
+    },
+    changeUnreadStatus: function (req, res, next) {
+        var notificationId = req.params.id;
+        var status = req.params.status;
+        notificationDAO.update({id: notificationId, status: status}), then(function (result) {
+            res.send({ret: 0, message: '更新消息未读已读状态成功'});
+        }).catch(function (err) {
+            res.send({ret: 1, message: err.message});
+        });
+        return next();
+    },
+    removeNotification: function (req, res, next) {
+        notificationDAO.delete(req.params.id).then(function (result) {
+            res.send({ret: 0, message: '删除成功'});
+        }).catch(function (err) {
+            res.send({ret: 1, message: err.message});
+        });
+        return next();
     }
 }
