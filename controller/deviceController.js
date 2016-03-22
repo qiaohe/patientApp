@@ -34,6 +34,19 @@ module.exports = {
             from: +req.query.from,
             size: +req.query.size
         }, search).then(function (ns) {
+            ns && ns.forEach(function (notification) {
+                    if (notification.type == 2) {
+                        notification.color = '#fa5858';
+                        notification.icon = config.qiniu.prefix + 'notification_alarm.png';
+                    } else if (notification.type == 1) {
+                        notification.color = '#0096ff';
+                        notification.icon = config.qiniu.prefix + 'notification_alert.png';
+                    } else if (notification.type == 0) {
+                        notification.icon = config.qiniu.prefix + 'notification_message.png';
+                        notification.color = '#49c810';
+                    }
+                }
+            )
             res.send({ret: 0, data: ns});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});

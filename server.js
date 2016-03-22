@@ -72,6 +72,7 @@ registrationDAO.findPeriods(1).then(function (periods) {
 });
 queue.process('orderPayDelayedQueue', function (job, done) {
     var orderNo = job.data.orderNo;
+    if (!orderNo) return;
     queue.processCallback(orderNo, function (err, result) {
         if (err) throw err;
         console.log('Job', job.id, 'is done' + job.orderNo);

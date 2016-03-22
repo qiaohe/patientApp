@@ -590,7 +590,7 @@ module.exports = {
     changeUnreadStatus: function (req, res, next) {
         var notificationId = req.params.id;
         var status = req.params.status;
-        notificationDAO.update({id: notificationId, status: status}), then(function (result) {
+        notificationDAO.update({id: notificationId, unread: status}).then(function (result) {
             res.send({ret: 0, message: '更新消息未读已读状态成功'});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
