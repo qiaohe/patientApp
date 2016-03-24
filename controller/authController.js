@@ -69,6 +69,7 @@ module.exports = {
                         id: result.insertId
                     }, config.app.tokenSecret, {expiresIn: config.app.tokenExpire});
                     redis.set(token, JSON.stringify(user));
+                    redis.set('uid:' + result.insertId + ':token', token);
                     if (user.invitationCode)
                         acceptInvitation(result.insertId, user.invitationCode, user.mobile, token, res);
                     user.id = result.insertId;
@@ -110,6 +111,10 @@ module.exports = {
                 user.rongToken = JSON.parse(resultText).token;
                 res.send({ret: 0, data: user});
             });
+            redis.getAsync('uid:' + user.id + ':token').then(function (reply) {
+                redis.del(reply);
+                redis.set('uid:' + user.id + ':token', token);
+            });
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
         });
@@ -146,6 +151,17 @@ module.exports = {
             });
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
+        });
+        return next();
+    },
+    getRongToken: function (req, res, next) {
+        var user = req.user;
+        rongcloudSDK.user.getToken(user.id, user.name, config.app.defaultHeadPic, function (err, resultText) {
+            if (err) throw err;
+            res.send({
+                ret: 0,
+                data: {refreshDate: moment().format('YYYY-MM-DD hh:mm:ss'), rongToken: JSON.parse(resultText).token}
+            });
         });
         return next();
     }

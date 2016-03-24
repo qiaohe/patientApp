@@ -276,5 +276,28 @@ module.exports = [
         path: "/api/payment/card",
         handler: patientController.payByMemberCard,
         secured: 'user'
+    },
+    {
+        method: "post",
+        path: "/api/notifications/:id/unread/:status",
+        handler: patientController.changeUnreadStatus,
+        secured: 'user'
+    },
+    {
+        method: "del",
+        path: "/api/notifications/:id",
+        handler: patientController.removeNotification,
+        secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/rongToken",
+        handler: authController.getRongToken,
+        secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/ttl",
+        handler: deviceController.getCurrentDate
     }
 ];

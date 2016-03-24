@@ -5,6 +5,7 @@ var deviceDAO = require('../dao/deviceDAO');
 var i18n = require('../i18n/localeMessage');
 var pusher = require('../domain/NotificationPusher');
 var notificationDAO = require('../dao/notificationDAO');
+var moment = require('moment');
 module.exports = {
     addDevice: function (req, res, next) {
         var device = req.body;
@@ -53,6 +54,10 @@ module.exports = {
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
         });
+        return next();
+    },
+    getCurrentDate: function (req, res, next) {
+        res.send({ret: 0, data: moment().format('YYYY-MM-DD hh:mm:ss')});
         return next();
     }
 }

@@ -22,8 +22,9 @@ module.exports = {
         tokenSecret: '1~a',
         tokenExpire: 86400,
         dateStrings: 'true',
-        orderDelayMinutes: 1,
-        welcomeMessage: '欢迎来到:hospital！'
+        orderDelayMinutes: 30,
+        welcomeMessage: '欢迎来到:hospital！',
+        defaultHeadPic: 'http://7xrtp2.com2.z0.glb.qiniucdn.com/headPic.png'
     },
     redis: {
         host: '127.0.0.1',

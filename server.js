@@ -101,8 +101,8 @@ queue.process('orderPayDelayedQueue', function (job, done) {
         }
     }).catch(function (err) {
         if (err) throw err;
+        console.log('Job', job.id, 'is done' + job.orderNo);
     });
-    done();
 });
 server.listen(config.server.port, config.server.host, function () {
     console.log('%s listening at %s', server.name, server.url);
