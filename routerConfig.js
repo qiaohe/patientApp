@@ -288,5 +288,16 @@ module.exports = [
         path: "/api/notifications/:id",
         handler: patientController.removeNotification,
         secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/rongToken",
+        handler: authController.getRongToken,
+        secured: 'user'
+    },
+    {
+        method: "get",
+        path: "/api/ttl",
+        handler: deviceController.getCurrentDate
     }
 ];

@@ -60,7 +60,7 @@ module.exports = {
                     createDate: new Date(),
                     password: md5(req.body.password),
                     name: user.name ? user.name : '患者' + user.mobile.substring(user.mobile.length - 4, user.mobile.length),
-                    headPic: config.app.headPic
+                    headPic: config.app.defaultHeadPic
                 });
                 return patientDAO.insert(user).then(function (result) {
                     var token = jwt.sign({
@@ -69,10 +69,11 @@ module.exports = {
                         id: result.insertId
                     }, config.app.tokenSecret, {expiresIn: config.app.tokenExpire});
                     redis.set(token, JSON.stringify(user));
+                    redis.set('uid:' + result.insertId + ':token', token);
                     if (user.invitationCode)
                         acceptInvitation(result.insertId, user.invitationCode, user.mobile, token, res);
                     user.id = result.insertId;
-                    rongcloudSDK.user.getToken(result.insertId, user.name, config.app.headPic, function (err, resultText) {
+                    rongcloudSDK.user.getToken(result.insertId, user.name, config.app.defaultHeadPic, function (err, resultText) {
                         if (err) throw err;
                         user.token = token;
                         user.rongToken = JSON.parse(resultText).token;
@@ -110,6 +111,10 @@ module.exports = {
                 user.rongToken = JSON.parse(resultText).token;
                 res.send({ret: 0, data: user});
             });
+            redis.getAsync('uid:' + user.id + ':token').then(function (reply) {
+                redis.del(reply);
+                redis.set('uid:' + user.id + ':token', token);
+            });
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
         });
@@ -146,6 +151,17 @@ module.exports = {
             });
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
+        });
+        return next();
+    },
+    getRongToken: function (req, res, next) {
+        var user = req.user;
+        rongcloudSDK.user.getToken(user.id, user.name, config.app.defaultHeadPic, function (err, resultText) {
+            if (err) throw err;
+            res.send({
+                ret: 0,
+                data: {refreshDate: moment().format('YYYY-MM-DD hh:mm:ss'), rongToken: JSON.parse(resultText).token}
+            });
         });
         return next();
     }

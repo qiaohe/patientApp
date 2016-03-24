@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: 'localhost',
+        host: '121.42.171.213',
         port: 3001
     },
     db: {
@@ -22,7 +22,7 @@ module.exports = {
         tokenSecret: '1~a',
         tokenExpire: 86400,
         dateStrings: 'true',
-        orderDelayMinutes: 1,
+        orderDelayMinutes: 30,
         welcomeMessage: '欢迎来到:hospital！',
         defaultHeadPic: 'http://7xrtp2.com2.z0.glb.qiniucdn.com/headPic.png'
     },
