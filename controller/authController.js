@@ -60,7 +60,7 @@ module.exports = {
                     createDate: new Date(),
                     password: md5(req.body.password),
                     name: user.name ? user.name : '患者' + user.mobile.substring(user.mobile.length - 4, user.mobile.length),
-                    headPic: 'http://7xoadl.com2.z0.glb.qiniucdn.com/headDefaultMale.png'
+                    headPic: config.app.defaultHeadPic
                 });
                 return patientDAO.insert(user).then(function (result) {
                     var token = jwt.sign({
@@ -72,7 +72,7 @@ module.exports = {
                     if (user.invitationCode)
                         acceptInvitation(result.insertId, user.invitationCode, user.mobile, token, res);
                     user.id = result.insertId;
-                    rongcloudSDK.user.getToken(result.insertId, user.name, 'http://7xoadl.com2.z0.glb.qiniucdn.com/user58.png', function (err, resultText) {
+                    rongcloudSDK.user.getToken(result.insertId, user.name, config.app.defaultHeadPic, function (err, resultText) {
                         if (err) throw err;
                         user.token = token;
                         user.rongToken = JSON.parse(resultText).token;

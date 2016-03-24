@@ -11,24 +11,25 @@ var queue = kue.createQueue({
     }
 });
 queue.processCallback = function (orderNo, callback) {
+    var o = {};
     medicalDAO.findOrdersBy(orderNo).then(function (orders) {
-        var order = orders[0];
-        if (order.status == 0) {
-            var template = order.type == 0 ? config.paymentDelayRegistrationTemplate : config.paymentDelayRecipeTemplate;
-            deviceDAO.findTokenByUid(order.patientBasicInfoId).then(function (tokens) {
+        var o = orders[0];
+        if (o.status == 0) {
+            var template = o.type == 0 ? config.paymentDelayRegistrationTemplate : config.paymentDelayRecipeTemplate;
+            deviceDAO.findTokenByUid(o.patientBasicInfoId).then(function (tokens) {
                 if (tokens.length && tokens[0]) {
                     var notificationBody = {};
-                    notificationBody = util.format(template, order.patientName + (order.gender == 0 ? '先生' : '女士'),
-                        order.hospitalName + '的' + config.orderType[order.type], orderNo);
+                    notificationBody = util.format(template, o.patientName + (o.gender == 0 ? '先生' : '女士'),
+                        o.hospitalName + '的' + config.orderType[o.type], orderNo);
                     pusher.push({
                         body: notificationBody,
-                        title: config.orderType[order.type] + '订单失效',
+                        title: config.orderType[o.type] + '订单失效',
                         audience: {registration_id: [tokens[0].token]},
-                        patientName: order.patientName,
-                        patientMobile: order.patientMobile,
-                        uid: order.patientBasicInfoId,
+                        patientName: o.patientName,
+                        patientMobile: o.patientMobile,
+                        uid: o.patientBasicInfoId,
                         type: 1,
-                        hospitalId: order.hospitalId
+                        hospitalId: o.hospitalId
                     }, function (err, result) {
                         callback(err, null);
                     });

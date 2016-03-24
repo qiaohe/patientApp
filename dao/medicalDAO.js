@@ -24,7 +24,7 @@ module.exports = {
         return db.query(sqlMapping.medical.findOrders, [uid, page.from, page.size]);
     },
     findOrdersBy: function (orderNo) {
-        return db.query(sqlMapping.medical.findOrdersBy, [orderNo]);
+        return db.query(sqlMapping.medical.findOrdersBy, orderNo);
     },
     insertComment: function (comment) {
         return db.query(sqlMapping.medical.insertComment, comment);
