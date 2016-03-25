@@ -125,6 +125,7 @@ module.exports = {
         var token = req.body.token || req.query.token || req.headers['token'];
         if (!token) return res.send(401, i18n.get('token.not.provided'));
         redis.delAsync(token).then(function () {
+            redis.del('uid:' + req.user.id + ':token');
             res.send({ret: 0, message: i18n.get('logout.success')});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
