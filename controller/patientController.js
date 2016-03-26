@@ -94,21 +94,21 @@ module.exports = {
             return registrationDAO.findShiftPeriodById(registration.hospitalId, registration.shiftPeriod);
         }).then(function (result) {
             deviceDAO.findTokenByUid(req.user.id).then(function (tokens) {
-                if (tokens.length && tokens[0]) {
-                    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'), registration.hospitalName, orderNo);
-                    pusher.push({
-                        body: notificationBody,
-                        title: '生成订单',
-                        audience: {registration_id: [tokens[0].token]},
-                        patientName: registration.patientName,
-                        patientMobile: registration.patientMobile,
-                        uid: req.user.id,
-                        type: 0,
-                        hospitalId: registration.hospitalId
-                    }, function (err, result) {
-                        if (err) throw err;
-                    });
-                }
+                //if (tokens.length && tokens[0]) {
+                //    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'), registration.hospitalName, orderNo);
+                //    pusher.push({
+                //        body: notificationBody,
+                //        title: '生成订单',
+                //        audience: {registration_id: [tokens[0].token]},
+                //        patientName: registration.patientName,
+                //        patientMobile: registration.patientMobile,
+                //        uid: req.user.id,
+                //        type: 0,
+                //        hospitalId: registration.hospitalId
+                //    }, function (err, result) {
+                //        if (err) throw err;
+                //    });
+                //}
                 return res.send({
                     ret: 0,
                     data: {
@@ -561,23 +561,23 @@ module.exports = {
                                 if (err) throw err;
                             });
                         }
-                        var template = config.preRegistrationPaymentSuccessTemplate;
-                        if (req.body.data.object.metadata.type == 1) template = config.recipePaymentSuccessTemplate;
-                        if (req.body.data.object.metadata.type == 2) template = config.preRegistrationPaymentSuccessTemplate;
-                        notificationBody = util.format(template, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
-                            registration.hospitalName + registration.departmentName + registration.doctorName, config.orderType[req.body.data.object.metadata.type] + '订单' + orderNo, req.body.data.object.amount);
-                        pusher.push({
-                            body: notificationBody,
-                            title: '订单支付成功',
-                            audience: {registration_id: [tokens[0].token]},
-                            patientName: registration.patientName,
-                            patientMobile: registration.patientMobile,
-                            uid: registration.patientBasicInfoId,
-                            type: 0,
-                            hospitalId: registration.hospitalId
-                        }, function (err, result) {
-                            if (err) throw err;
-                        });
+                        //var template = config.preRegistrationPaymentSuccessTemplate;
+                        //if (req.body.data.object.metadata.type == 1) template = config.recipePaymentSuccessTemplate;
+                        //if (req.body.data.object.metadata.type == 2) template = config.preRegistrationPaymentSuccessTemplate;
+                        //notificationBody = util.format(template, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                        //    registration.hospitalName + registration.departmentName + registration.doctorName, config.orderType[req.body.data.object.metadata.type] + '订单' + orderNo, req.body.data.object.amount);
+                        //pusher.push({
+                        //    body: notificationBody,
+                        //    title: '订单支付成功',
+                        //    audience: {registration_id: [tokens[0].token]},
+                        //    patientName: registration.patientName,
+                        //    patientMobile: registration.patientMobile,
+                        //    uid: registration.patientBasicInfoId,
+                        //    type: 0,
+                        //    hospitalId: registration.hospitalId
+                        //}, function (err, result) {
+                        //    if (err) throw err;
+                        //});
                     }
                 });
             });

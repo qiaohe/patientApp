@@ -130,23 +130,23 @@ module.exports = {
                             if (err) throw err;
                         });
                     }
-                    var template = config.preRegistrationPaymentSuccessTemplate;
-                    if (req.body.data.object.metadata.type == 1) template = config.recipePaymentSuccessTemplate;
-                    if (req.body.data.object.metadata.type == 2) template = config.preRegistrationPaymentSuccessTemplate;
-                    notificationBody = util.format(template, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
-                        registration.hospitalName + registration.departmentName + registration.doctorName, config.orderType[req.body.data.object.metadata.type] + '订单' + orderNo, req.body.data.object.amount);
-                    pusher.push({
-                        body: notificationBody,
-                        title: '订单支付成功',
-                        audience: {registration_id: [tokens[0].token]},
-                        patientName: registration.patientName,
-                        patientMobile: registration.patientMobile,
-                        uid: registration.patientBasicInfoId,
-                        type: 0,
-                        hospitalId: registration.hospitalId
-                    }, function (err, result) {
-                        if (err) throw err;
-                    });
+                    //var template = config.preRegistrationPaymentSuccessTemplate;
+                    //if (req.body.data.object.metadata.type == 1) template = config.recipePaymentSuccessTemplate;
+                    //if (req.body.data.object.metadata.type == 2) template = config.preRegistrationPaymentSuccessTemplate;
+                    //notificationBody = util.format(template, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                    //    registration.hospitalName + registration.departmentName + registration.doctorName, config.orderType[req.body.data.object.metadata.type] + '订单' + orderNo, req.body.data.object.amount);
+                    //pusher.push({
+                    //    body: notificationBody,
+                    //    title: '订单支付成功',
+                    //    audience: {registration_id: [tokens[0].token]},
+                    //    patientName: registration.patientName,
+                    //    patientMobile: registration.patientMobile,
+                    //    uid: registration.patientBasicInfoId,
+                    //    type: 0,
+                    //    hospitalId: registration.hospitalId
+                    //}, function (err, result) {
+                    //    if (err) throw err;
+                    //});
                 }
             });
             res.send({ret: 0, data: '支付回调处理成功。'});

@@ -77,32 +77,32 @@ queue.process('orderPayDelayedQueue', function (job, done) {
         var o = orders[0];
         if (o.status == 0) {
             medicalDAO.updateOrder({orderNo: orderNo, status: 2}).then(function (result) {
-                var template = o.type == 0 ? config.paymentDelayRegistrationTemplate : config.paymentDelayRecipeTemplate;
-                deviceDAO.findTokenByUid(o.patientBasicInfoId).then(function (tokens) {
-                    if (tokens.length && tokens[0]) {
-                        var notificationBody = {};
-                        notificationBody = util.format(template, o.patientName + (o.gender == 0 ? '先生' : '女士'),
-                            o.hospitalName + '的' + config.orderType[o.type], orderNo);
-                        pusher.push({
-                            body: notificationBody,
-                            title: config.orderType[o.type] + '订单失效',
-                            audience: {registration_id: [tokens[0].token]},
-                            patientName: o.patientName,
-                            patientMobile: o.patientMobile,
-                            uid: o.patientBasicInfoId,
-                            type: 1,
-                            hospitalId: o.hospitalId
-                        }, function (err, result) {
-                            if (err) throw err;
-                        });
-                    }
-                });
+                //var template = o.type == 0 ? config.paymentDelayRegistrationTemplate : config.paymentDelayRecipeTemplate;
+                //deviceDAO.findTokenByUid(o.patientBasicInfoId).then(function (tokens) {
+                //    if (tokens.length && tokens[0]) {
+                //        var notificationBody = {};
+                //        notificationBody = util.format(template, o.patientName + (o.gender == 0 ? '先生' : '女士'),
+                //            o.hospitalName + '的' + config.orderType[o.type], orderNo);
+                //        pusher.push({
+                //            body: notificationBody,
+                //            title: config.orderType[o.type] + '订单失效',
+                //            audience: {registration_id: [tokens[0].token]},
+                //            patientName: o.patientName,
+                //            patientMobile: o.patientMobile,
+                //            uid: o.patientBasicInfoId,
+                //            type: 1,
+                //            hospitalId: o.hospitalId
+                //        }, function (err, result) {
+                //            if (err) throw err;
+                //        });
+                //    }
+                //});
             });
         }
     }).catch(function (err) {
         if (err) throw err;
-        console.log('Job', job.id, 'is done' + job.orderNo);
     });
+    done();
 });
 server.listen(config.server.port, config.server.host, function () {
     console.log('%s listening at %s', server.name, server.url);
