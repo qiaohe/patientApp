@@ -154,5 +154,9 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
+    },
+    getVersionInfo: function (req, res, next) {
+        res.send({ret: 0, data: config.versionInfo});
+        return next();
     }
 }

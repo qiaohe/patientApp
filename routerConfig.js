@@ -299,5 +299,10 @@ module.exports = [
         method: "get",
         path: "/api/ttl",
         handler: deviceController.getCurrentDate
+    },
+    {
+        method: "get",
+        path: "/api/versionInfo",
+        handler: thirdPartyController.getVersionInfo
     }
 ];

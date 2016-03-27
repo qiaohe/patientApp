@@ -78,6 +78,13 @@ module.exports = {
     paymentDelayRegistrationTemplate: '【%s】因未能及时支付，您在%s订单%s已失效；如需预约请重新选择医院医生和预约时段，感谢您的配合。',
     paymentDelayRecipeTemplate: '【%s】因未能及时支付，您在%s订号%s已失效；为了您的康复，请尽快接洽本次门诊的医生，感谢您的配合！',
     orderStatus: ['未支付', '已支付', '已取消', '完成', '支付失败'],
-    orderType: ["挂号费", "药费", "诊疗费"]
+    orderType: ["挂号费", "药费", "诊疗费"],
+    versionInfo: {
+        versionCode: '10000',
+        versionName: '1.0.1',
+        downloadUrl: 'http://7xrtp2.com2.z0.glb.qiniucdn.com/app-server-release.apk',
+        content: '1.fix我的医院搜索条件bug。\r\n2.添加自动更新版本功能。',
+        force: 0
+    }
 };
 
