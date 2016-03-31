@@ -27,7 +27,7 @@ function acceptInvitation(uid, invitationCode, mobile, token, res) {
                 return registrationDAO.insertPatient({
                     patientBasicInfoId: uid,
                     hospitalId: contact.hospitalId,
-                    memberType: 1,
+                    memberType: 0,
                     source: contact.source,
                     balance: 0.00,
                     recommender: contact.businessPeopleId,
