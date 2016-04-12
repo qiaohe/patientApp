@@ -22,7 +22,12 @@ module.exports = {
         registration.createDate = new Date();
         registration.patientBasicInfoId = req.user.id;
         var orderNo = {};
-        patientDAO.findById(req.user.id).then(function (basicInfoIds) {
+        registrationDAO.findShiftPlanByDoctorAndShiftPeriod(registration.doctorId, registration.registerDate, registration.shiftPeriod).then(function (plans) {
+            if (!plans.length || (plans[0].plannedQuantity <= +plans[0].actualQuantity)) {
+                throw new Error(i18n.get('doctor.shift.plan.invalid'));
+            }
+            return patientDAO.findById(req.user.id);
+        }).then(function (basicInfoIds) {
             registration.patientName = registration.patientName ? registration.patientName : basicInfoIds[0].realName;
             registration.patientMobile = basicInfoIds[0].mobile;
             registration.gender = basicInfoIds[0].gender;
