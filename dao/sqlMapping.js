@@ -40,7 +40,7 @@ module.exports = {
         updateShiftPlan: 'update ShiftPlan set actualQuantity = actualQuantity + 1 where doctorId = ? and day =? and shiftPeriod = ?',
         updateShiftPlanDec: 'update ShiftPlan set actualQuantity = actualQuantity - 1 where doctorId = ? and day =? and shiftPeriod = ?',
         findShiftPeriodById: 'select * from ShiftPeriod where hospitalId = ? and id =?',
-        findRegistrationsByUid: 'select r.id, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id and patientBasicInfoId = ? and r.sequence is not NULL order by r.id desc limit ?,?',
+        findRegistrationsByUid: 'select r.id, r.hospitalId, r.doctorId, doctorName, doctorHeadPic,registrationFee, departmentName,doctorJobTitle, hospitalName, patientName,concat(DATE_FORMAT(r.registerDate, \'%Y-%m-%d \') , s.`name`) as shiftPeriod, r.status, r.sequence  from Registration r, ShiftPeriod s where r.shiftPeriod = s.id and patientBasicInfoId = ? and r.sequence is not NULL order by r.id desc limit ?,?',
         findById: 'select * from Registration where id =?',
         updateRegistration: "update Registration set ? where id = ?",
         findPeriods: 'select id from ShiftPeriod where hospitalId = ? order by name',

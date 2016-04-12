@@ -42,7 +42,7 @@ module.exports = {
             registration.registrationType = 0;
             registration.outPatientType = 0;
             registration.outpatientStatus = 5;
-            registration.memberType = 1;
+            registration.memberType = 0;
             registration.creator = req.user.id;
             registration.hospitalId = doctor.hospitalId;
             return registrationDAO.findPatientByBasicInfoIdAndHospitalId(req.user.id, registration.hospitalId)
@@ -54,7 +54,7 @@ module.exports = {
                     return registrationDAO.insertPatient({
                         patientBasicInfoId: req.user.id,
                         hospitalId: registration.hospitalId,
-                        memberType: 1,
+                        memberType: 0,
                         balance: 0.00,
                         memberCardNo: registration.hospitalId + '-1-' + _.padLeft(memberNo, 7, '0'),
                         createDate: new Date()
@@ -466,7 +466,7 @@ module.exports = {
                     return registrationDAO.insertPatient({
                         patientBasicInfoId: req.user.id,
                         hospitalId: contact.hospitalId,
-                        memberType: 1,
+                        memberType: 0,
                         source: contact.source,
                         balance: 0.00,
                         recommender: contact.businessPeopleId,
