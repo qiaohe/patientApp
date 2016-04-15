@@ -41,6 +41,9 @@ module.exports = {
     findDoctorsBy: function (departmentId, registrationFee) {
         return db.query(sqlMapping.doctor.findBy, [departmentId, registrationFee]);
     },
+    findShiftPlanByDoctorAndShiftPeriod: function (doctorId, day, shiftPeriod) {
+        return db.query(sqlMapping.registration.findShiftPlanByDoctorAndShiftPeriod, [doctorId, day, shiftPeriod]);
+    },
     updateInvitationContact: function (contact) {
         return db.query(sqlMapping.patient.updateContact, [contact, contact.id]);
     },

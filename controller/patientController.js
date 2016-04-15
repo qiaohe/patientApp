@@ -22,7 +22,12 @@ module.exports = {
         registration.createDate = new Date();
         registration.patientBasicInfoId = req.user.id;
         var orderNo = {};
-        patientDAO.findById(req.user.id).then(function (basicInfoIds) {
+        registrationDAO.findShiftPlanByDoctorAndShiftPeriod(registration.doctorId, registration.registerDate, registration.shiftPeriod).then(function (plans) {
+            if (!plans.length || (plans[0].plannedQuantity <= +plans[0].actualQuantity)) {
+                throw new Error(i18n.get('doctor.shift.plan.invalid'));
+            }
+            return patientDAO.findById(req.user.id);
+        }).then(function (basicInfoIds) {
             registration.patientName = registration.patientName ? registration.patientName : basicInfoIds[0].realName;
             registration.patientMobile = basicInfoIds[0].mobile;
             registration.gender = basicInfoIds[0].gender;
@@ -78,7 +83,9 @@ module.exports = {
                     amount: registration.registrationFee,
                     paidAmount: 0.00,
                     paymentAmount: registration.registrationFee,
-                    status: 0,
+                    status: registration.registrationFee == 0.00 ? 1 : 0,
+                    paymentDate: registration.registrationFee == 0.00 ? new Date() : null,
+                    paymentType: registration.registrationFee == 0.00 ? 2 : null,
                     createDate: new Date(),
                     type: 0
                 };
@@ -93,39 +100,70 @@ module.exports = {
         }).then(function () {
             return registrationDAO.findShiftPeriodById(registration.hospitalId, registration.shiftPeriod);
         }).then(function (result) {
-            deviceDAO.findTokenByUid(req.user.id).then(function (tokens) {
-                //if (tokens.length && tokens[0]) {
-                //    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'), registration.hospitalName, orderNo);
-                //    pusher.push({
-                //        body: notificationBody,
-                //        title: '生成订单',
-                //        audience: {registration_id: [tokens[0].token]},
-                //        patientName: registration.patientName,
-                //        patientMobile: registration.patientMobile,
-                //        uid: req.user.id,
-                //        type: 0,
-                //        hospitalId: registration.hospitalId
-                //    }, function (err, result) {
-                //        if (err) throw err;
-                //    });
-                //}
-                return res.send({
-                    ret: 0,
-                    data: {
-                        id: registration.id,
-                        registerDate: registration.registerDate,
-                        hospitalName: registration.hospitalName,
-                        departmentName: registration.departmentName,
-                        doctorName: registration.doctorName, jobTtile: registration.doctorJobTtile,
-                        shiftPeriod: result[0].name,
-                        orderNo: orderNo,
-                        registrationFee: registration.registrationFee
+                deviceDAO.findTokenByUid(req.user.id).then(function (tokens) {
+                    //if (tokens.length && tokens[0]) {
+                    //    var notificationBody = util.format(config.preRegistrationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'), registration.hospitalName, orderNo);
+                    //    pusher.push({
+                    //        body: notificationBody,
+                    //        title: '生成订单',
+                    //        audience: {registration_id: [tokens[0].token]},
+                    //        patientName: registration.patientName,
+                    //        patientMobile: registration.patientMobile,
+                    //        uid: req.user.id,
+                    //        type: 0,
+                    //        hospitalId: registration.hospitalId
+                    //    }, function (err, result) {
+                    //        if (err) throw err;
+                    //    });
+                    //}
+                    if (registration.registrationFee == 0.00) {
+                        redis.incrAsync('doctor:' + registration.doctorId + ':d:' + registration.registerDate + ':period:' + registration.shiftPeriod + ':incr').then(function (seq) {
+                            redis.getAsync('h:' + registration.hospitalId + ':p:' + registration.shiftPeriod).then(function (sp) {
+                                registration.sequence = sp + seq;
+                                registrationDAO.updateRegistration({
+                                    id: registration.id,
+                                    sequence: registration.sequence
+                                }).then(function (result) {
+                                    registrationDAO.findShiftPeriodById(registration.hospitalId, registration.shiftPeriod).then(function (result) {
+                                        var notificationBody = util.format(config.registrationNotificationTemplate, registration.patientName + (registration.gender == 0 ? '先生' : '女士'),
+                                            registration.hospitalName + registration.departmentName + registration.doctorName, moment(registration.registerDate).format('YYYY-MM-DD') + ' ' + result[0].name);
+                                        pusher.push({
+                                            body: notificationBody,
+                                            title: '预约挂号成功',
+                                            audience: {registration_id: [tokens[0].token]},
+                                            patientName: registration.patientName,
+                                            patientMobile: registration.patientMobile,
+                                            uid: registration.patientBasicInfoId,
+                                            type: 0,
+                                            hospitalId: registration.hospitalId
+                                        }, function (err, result) {
+                                            if (err) throw err;
+                                        });
+                                    });
+                                });
+                            })
+                        });
                     }
+
+                    return res.send({
+                        ret: 0,
+                        data: {
+                            id: registration.id,
+                            registerDate: registration.registerDate,
+                            hospitalName: registration.hospitalName,
+                            departmentName: registration.departmentName,
+                            doctorName: registration.doctorName, jobTtile: registration.doctorJobTtile,
+                            shiftPeriod: result[0].name,
+                            orderNo: orderNo,
+                            registrationFee: registration.registrationFee
+                        }
+                    });
                 });
+            }
+        ).
+            catch(function (err) {
+                res.send({ret: 1, message: err.message});
             });
-        }).catch(function (err) {
-            res.send({ret: 1, message: err.message});
-        });
         return next();
     },
 
@@ -200,7 +238,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
     removePreRegistration: function (req, res, next) {
         var rid = req.params.rid;
         var registration = {};
@@ -235,7 +274,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
     favoriteDoctor: function (req, res, next) {
         var uid = req.user.id;
         var queue = 'uid:' + uid + ':favorite:' + 'doctors';
@@ -251,7 +291,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
     favoriteHospital: function (req, res, next) {
         var uid = req.user.id;
         var queue = 'uid:' + uid + ':favorite:' + 'hospitals';
@@ -277,7 +318,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
 
     getFavouritedDoctors: function (req, res, next) {
         var uid = req.user.id;
@@ -291,7 +333,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
 
     getFavouritedHospitals: function (req, res, next) {
         var uid = req.user.id;
@@ -310,7 +353,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
 
     sendWelcomeMessages: function (req, res, next) {
         var uid = req.user.id;
@@ -331,7 +375,8 @@ module.exports = {
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
         });
-    },
+    }
+    ,
 
     getMyPreRegistrations: function (req, res, next) {
         var uid = req.user.id;
@@ -377,7 +422,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
 
     getCardsByHospitalId: function (req, res, next) {
         var hospitalId = req.params.id;
@@ -386,7 +432,8 @@ module.exports = {
             res.send({ret: 0, data: cards[0]});
         });
         return next();
-    },
+    }
+    ,
 
     getTransactionFlows: function (req, res, next) {
         hospitalDAO.findTransactionFlowsByUid(req.user.id, +req.query.from, +req.query.size).then(function (flows) {
@@ -493,7 +540,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
 
     changeMobile: function (req, res, next) {
         var uid = req.user.id;
@@ -509,7 +557,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
     payByMemberCard: function (req, res, next) {
         var payObject = req.body;
         var order = {};
@@ -586,7 +635,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next()
-    },
+    }
+    ,
     changeUnreadStatus: function (req, res, next) {
         var notificationId = req.params.id;
         var status = req.params.status;
@@ -596,7 +646,8 @@ module.exports = {
             res.send({ret: 1, message: err.message});
         });
         return next();
-    },
+    }
+    ,
     removeNotification: function (req, res, next) {
         notificationDAO.delete(req.params.id).then(function (result) {
             res.send({ret: 0, message: '删除成功'});
