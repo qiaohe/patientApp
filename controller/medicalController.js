@@ -4,6 +4,7 @@ var _ = require('lodash');
 var patientDAO = require('../dao/patientDAO');
 var Promise = require('bluebird');
 var medicalDAO = require('../dao/medicalDAO');
+var moment = require('moment');
 module.exports = {
     getMedicalHistories: function (req, res, next) {
         var uid = req.user.id;
@@ -15,6 +16,9 @@ module.exports = {
             medicalHistories.forEach(function (history) {
                 history.registrationType = history.registrationType == 3 ? '复诊' : '初诊';
                 history.gender = config.gender[history.gender];
+                if (history.age) {
+                    history.birthday = moment().add(history.age * (-1), 'y');
+                }
             });
             res.send({ret: 0, data: medicalHistories});
         }).catch(function (err) {

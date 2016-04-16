@@ -15,7 +15,7 @@ module.exports = {
         debug: false,
         multipleStatements: true,
         dateStrings: true,
-        database: 'medicalDB'
+        database: 'medicalDB_Test'
     },
     app: {
         locale: 'zh_CN',
@@ -28,7 +28,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6379
+        port: 6380
     },
     sms: {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
@@ -51,7 +51,7 @@ module.exports = {
     },
     ping: {
         appId: 'app_yf1SyDmT0Wj1eznT',
-        appSecret: 'sk_test_8WDC8S5W9W5GSybrT4fvfr5S'
+        appSecret: 'sk_live_b9a50KbzDiXLiXvHW5eLynzL'
     },
     registrationType: ["线上预约", "线下预约", "现场挂号", "复诊预约", "转诊挂号", "现场加号", "线上加号", "销售预约", "销售加号"],
     registrationStatus: ["预约成功", "预约未支付", "预约失败", "预约变更", "预约取消"],
