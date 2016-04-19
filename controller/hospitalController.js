@@ -13,8 +13,14 @@ module.exports = {
         hospitalDAO.searchHospital(req.query.name, {
             from: req.query.from,
             size: req.query.size
-        }).then(function (hospitals) {
-            if (!hospitals) return res.send({ret: 0, data: []});
+        }, req.query.lat, req.query.lng).then(function (hospitals) {
+            hospitals && hospitals.forEach(function (hospital) {
+                if (hospital.distance) {
+                    hospital.distance = hospital.distance < 1000 ? hospital.distance + '米' : (hospital.distance / 1000).toFixed(2) + '公里';
+                } else {
+                    hospital.distance = 0;
+                }
+            });
             return res.send({ret: 0, data: hospitals});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
@@ -46,7 +52,17 @@ module.exports = {
     },
 
     getHospitals: function (req, res, next) {
-        hospitalDAO.findAll({from: req.query.from, size: req.query.size}).then(function (hospitals) {
+        hospitalDAO.findAll({
+            from: req.query.from,
+            size: req.query.size
+        }, req.query.lat, req.query.lng).then(function (hospitals) {
+            hospitals && hospitals.forEach(function (hospital) {
+                if (hospital.distance) {
+                    hospital.distance = hospital.distance < 1000 ? hospital.distance + '米' : (hospital.distance / 1000).toFixed(2) + '公里';
+                } else {
+                    hospital.distance = 0;
+                }
+            });
             return res.send({ret: 0, data: hospitals});
         }).catch(function (err) {
             res.send({ret: 1, message: err.message});
