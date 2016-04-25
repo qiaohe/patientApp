@@ -14,6 +14,7 @@ db.query = function (sql, values) {
         return connection.queryAsync(sql, values).then(function (result) {
             return result[0];
         }).catch(function (err) {
+            connection.destroy();
             throw err;
         });
     });

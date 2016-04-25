@@ -18,7 +18,7 @@ module.exports = {
                 if (hospital.distance) {
                     hospital.distance = hospital.distance < 1000 ? hospital.distance + '米' : (hospital.distance / 1000).toFixed(2) + '公里';
                 } else {
-                    hospital.distance = 0;
+                    hospital.distance = '0';
                 }
             });
             return res.send({ret: 0, data: hospitals});
