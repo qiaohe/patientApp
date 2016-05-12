@@ -70,7 +70,14 @@ module.exports = {
         medicalDAO.findOrdersBy(orderNo).then(function (orders) {
             order = orders[0];
             order.status = config.orderStatus[order.status];
-            order.paymentType = order.paymentType != null ? config.paymentType[+order.paymentType] : null;
+            //order.paymentType = order.paymentType != null ? config.paymentType[+order.paymentType] : null;
+            var paymentTypes = _.compact([order.paymentType1, order.paymentType2, order.paymentType3]);
+            if (paymentTypes.length < 1) paymentTypes.push(order.paymentType);
+            var ps = [];
+            paymentTypes && paymentTypes.forEach(function (item) {
+                ps.push(config.paymentType[+item]);
+            });
+            order.paymentType = ps.join(',');
             if (order.type == 1) return medicalDAO.findRecipesByOrderNo(orderNo);
             if (order.type == 2) return medicalDAO.findPrescriptionByOrderNo(orderNo);
         }).then(function (items) {
