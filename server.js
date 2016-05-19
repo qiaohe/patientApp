@@ -1,4 +1,6 @@
 'use strict';
+
+console.log('y\''.replace(''))
 var restify = require('restify');
 var config = require('./config');
 var redis = require('./common/redisClient');
@@ -64,13 +66,26 @@ registrationDAO.findRegistrationByDate(moment().format('YYYY-MM-DD')).then(funct
         }
     })
 });
-
-registrationDAO.findPeriods(1).then(function (periods) {
-    periods.forEach(function (item, index) {
-        var key = 'h:' + 1 + ':p:' + item.id;
-        redis.set(key, String.fromCharCode(65 + index))
-    })
+var Promise = require('bluebird');
+var hospitalIds = [1, 6, 22, 23, 24];
+Promise.map(hospitalIds, function (id) {
+    return registrationDAO.findPeriods(id).then(function (periods) {
+        Promise.map(periods, function (period, index) {
+            var key = 'h:' + id + ':p:' + period.id;
+            return redis.setAsync(key, String.fromCharCode(65 + index))
+        }).then(function () {
+            console.log('dd');
+        });
+        //return periods.forEach(function (item, index) {
+        //    var key = 'h:' + id + ':p:' + item.id;
+        //    return redis.setAsync(key, String.fromCharCode(65 + index))
+        //})
+    });
+}).then(function () {
+    console.log('ddd');
 });
+
+
 queue.process('orderPayDelayedQueue', function (job, done) {
     var orderNo = job.data.orderNo;
     medicalDAO.findOrdersBy(orderNo).then(function (orders) {

@@ -39,7 +39,7 @@ function acceptInvitation(uid, invitationCode, mobile, token, res) {
     }).then(function () {
             var message = config.app.welcomeMessage.replace(':hospital', contact.hospitalName);
             hospitalDAO.findHospitalById(contact.hospitalId).then(function (hs) {
-                rongcloudSDK.message.private.publish(contact.hospitalId + '-' + hs[0].customerServiceUid, uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
+                rongcloudSDK.message.private.publish(contact.hospitalId + '-cs', uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
                     if (err) throw err;
                     console.log(resultText);
                 });

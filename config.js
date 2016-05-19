@@ -4,7 +4,7 @@ module.exports = {
     server: {
         name: '云诊宝APP',
         version: '0.0.1',
-        host: '121.42.171.213',
+        host: 'localhost',
         port: 3001
     },
     db: {
@@ -28,7 +28,7 @@ module.exports = {
     },
     redis: {
         host: '127.0.0.1',
-        port: 6380
+        port: 6379
     },
     sms: {
         providerUrl: 'https://sms.yunpian.com/v1/sms/send.json',
@@ -46,8 +46,8 @@ module.exports = {
         appKey: "21bd61c93392c3e2d1e48d4c"
     },
     rongcloud: {
-        appKey: 'z3v5yqkbvtei0',
-        appSecret: 'BDcA3iRjgFp'
+        appKey: 'vnroth0kru1bo',
+        appSecret: 'VpGhM1NiOBP3W'
     },
     ping: {
         appId: 'app_yf1SyDmT0Wj1eznT',
