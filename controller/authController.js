@@ -76,7 +76,7 @@ module.exports = {
                     rongcloudSDK.user.getToken(result.insertId, user.name, config.app.defaultHeadPic, function (err, resultText) {
                         if (err) throw err;
                         user.token = token;
-                        user.rongToken = JSON.parse(resultText).token;
+                        user.rongToken = (resultText == null ? null : JSON.parse(resultText).token);
                         res.send({
                             ret: 0,
                             data: user
