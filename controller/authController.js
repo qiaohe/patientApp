@@ -76,7 +76,7 @@ module.exports = {
                     rongcloudSDK.user.getToken(result.insertId, user.name, config.app.defaultHeadPic, function (err, resultText) {
                         if (err) throw err;
                         user.token = token;
-                        user.rongToken = JSON.parse(resultText).token;
+                        user.rongToken = (resultText == null ? null : JSON.parse(resultText).token);
                         res.send({
                             ret: 0,
                             data: user
@@ -122,7 +122,7 @@ module.exports = {
     },
 
     logout: function (req, res, next) {
-        var token = req.body.token || req.query.token || req.headers['token'];
+        var token = req.headers['token'];
         if (!token) return res.send(401, i18n.get('token.not.provided'));
         redis.delAsync(token).then(function () {
             redis.del('uid:' + req.user.id + ':token');
@@ -167,3 +167,6 @@ module.exports = {
         return next();
     }
 }
+
+
+

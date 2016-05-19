@@ -96,6 +96,7 @@ module.exports = {
             hospital.images = hospital.images ? hospital.images.split(',') : [];
             return redis.zrankAsync(queue, req.params.hospitalId).then(function (index) {
                 hospital.favorited = (index != null);
+                hospital.customerServiceUid = 'cs';
                 res.send({ret: 0, data: hospital});
             });
         }).catch(function (err) {

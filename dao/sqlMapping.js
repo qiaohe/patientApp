@@ -25,7 +25,7 @@ module.exports = {
     },
 
     department: {
-        findByHospital: 'select id, name, introduction from Department where hospitalId = ?'
+        findByHospital: 'select id, name, introduction from Department where hospitalId = ? and isRegister=1'
     },
 
     doctor: {

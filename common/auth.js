@@ -19,7 +19,7 @@ function authorizedIfNeeded(req) {
 function auth() {
     function ensureAuthorized(req, res, next) {
         if (!authorizedIfNeeded(req)) return next();
-        var token = req.headers['token'] || req.query.token || req.body.token;
+        var token = req.headers['token'];
         if (!token) return res.send(403, i18n.get("access.not.authorized"));
         jwt.verifyAsync(token, config.app.tokenSecret).then(function (user) {
             if (user.exp * 1000 <= Date.now()) return res.send(403, i18n.get("token.expired"));
