@@ -6,6 +6,8 @@ var hospitalDAO = require('../dao/hospitalDAO');
 var medicalDAO = require('../dao/medicalDAO');
 var _ = require('lodash');
 var moment = require('moment');
+var rongcloudSDK = require('rongcloud-sdk');
+rongcloudSDK.init(config.rongcloud.appKey, config.rongcloud.appSecret);
 module.exports = {
     searchHospital: function (req, res, next) {
         hospitalDAO.searchHospital(req.query.name, {
@@ -87,7 +89,6 @@ module.exports = {
         });
         return next();
     },
-
     getHospitalById: function (req, res, next) {
         var queue = 'uid:' + req.user.id + ':favorite:' + 'hospitals';
         hospitalDAO.findHospitalById(req.params.hospitalId).then(function (hospitals) {

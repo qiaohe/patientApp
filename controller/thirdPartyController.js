@@ -18,7 +18,7 @@ var moment = require('moment');
 module.exports = {
     sendSMS: function (req, res, next) {
         var smsConfig = config.sms;
-        var code = '0000';//_.random(1000, 9999);
+        var code = _.random(1000, 9999);
         var content = smsConfig.template.replace(':code', code);
         var option = {mobile: req.params.mobile, text: content, apikey: config.sms.apikey};
         request.postAsync({url: smsConfig.providerUrl, form: option}).then(function (response, body) {
