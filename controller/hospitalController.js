@@ -10,10 +10,14 @@ var rongcloudSDK = require('rongcloud-sdk');
 rongcloudSDK.init(config.rongcloud.appKey, config.rongcloud.appSecret);
 module.exports = {
     searchHospital: function (req, res, next) {
+        var conditions = [];
+        if (req.query.districtId) conditions.push('districtId like \'%' + req.query.districtId + '%\'');
+        if (req.query.provId) conditions.push('provId like \'%' + req.query.provId + '%\'');
+        if (req.query.cityId) conditions.push('cityId like \'%' + req.query.cityId + '%\'');
         hospitalDAO.searchHospital(req.query.name, {
             from: req.query.from,
             size: req.query.size
-        }, req.query.lat, req.query.lng).then(function (hospitals) {
+        }, conditions, req.query.lat, req.query.lng).then(function (hospitals) {
             hospitals && hospitals.forEach(function (hospital) {
                 if (hospital.distance) {
                     hospital.distance = hospital.distance < 1000 ? hospital.distance + '米' : (hospital.distance / 1000).toFixed(2) + '公里';
@@ -52,10 +56,14 @@ module.exports = {
     },
 
     getHospitals: function (req, res, next) {
+        var conditions = [];
+        if (req.query.districtId) conditions.push('districtId like \'%' + req.query.districtId + '%\'');
+        if (req.query.provId) conditions.push('provId like \'%' + req.query.provId + '%\'');
+        if (req.query.cityId) conditions.push('cityId like \'%' + req.query.cityId + '%\'');
         hospitalDAO.findAll({
             from: req.query.from,
             size: req.query.size
-        }, req.query.lat, req.query.lng).then(function (hospitals) {
+        }, conditions, req.query.lat, req.query.lng).then(function (hospitals) {
             hospitals && hospitals.forEach(function (hospital) {
                 if (hospital.distance) {
                     hospital.distance = hospital.distance < 1000 ? hospital.distance + '米' : (hospital.distance / 1000).toFixed(2) + '公里';
@@ -97,7 +105,7 @@ module.exports = {
             hospital.images = hospital.images ? hospital.images.split(',') : [];
             return redis.zrankAsync(queue, req.params.hospitalId).then(function (index) {
                 hospital.favorited = (index != null);
-                hospital.customerServiceUid = 'cs';
+                hospital.customerServiceUid = 999999;
                 res.send({ret: 0, data: hospital});
             });
         }).catch(function (err) {
@@ -126,9 +134,19 @@ module.exports = {
 
     getShitPlan: function (req, res, next) {
         var doctorId = req.params.doctorId;
-        var start = req.query.d;
-        hospitalDAO.findShiftPlans(doctorId, start, req.user.id).then(function (plans) {
-            var data = _.groupBy(plans, function (plan) {
+        var start = moment(req.query.d).add(-1, 'd').format('YYYY-MM-DD');
+        var end = moment(req.query.d).add(1, 'w').format('YYYY-MM-DD');
+        hospitalDAO.findShiftPlans(doctorId, start, end, req.user.id).then(function (plans) {
+            var filteredPlans = _.filter(plans, function (p) {
+                var date = p.day + ' ' + p.period.split('-')[0];
+                return moment(date, 'YYYY-MM-DD HH:mm').isAfter(moment());
+            });
+
+            var sortedPlans = _.sortBy(filteredPlans, function (item) {
+                var date = item.day + ' ' + item.period.split('-')[0];
+                return moment(date, 'YYYY-MM-DD HH:mm');
+            });
+            var data = _.groupBy(sortedPlans, function (plan) {
                 moment.locale('zh_CN');
                 return moment(plan.day).format('YYYY-MM-DD dddd');
             });

@@ -61,7 +61,7 @@ module.exports = {
             pingpp.charges.create({
                 subject: config.orderType[+orders[0].type],
                 body: config.orderType[+orders[0].type],
-                amount: +orders[0].paymentAmount,
+                amount: +orders[0].paymentAmount * 100,
                 order_no: orderNo,
                 channel: +paymentType == 0 ? "alipay" : 'wx',
                 currency: "cny",
@@ -84,11 +84,11 @@ module.exports = {
             orderNo: orderNo,
             status: 1,
             paymentType: paymentType,
-            paidAmount: req.body.data.object.amount,
+            paidAmount: req.body.data.object.amount / 100,
             paymentDate: new Date()
         }).then(function () {
             medicalDAO.insertTransactionFlow({
-                amount: req.body.data.object.amount,
+                amount: req.body.data.object.amount / 100,
                 name: req.body.data.object.subject,
                 transactionNo: req.body.data.object.transaction_no,
                 paymentType: paymentType,
@@ -105,7 +105,11 @@ module.exports = {
             return redis.incrAsync('doctor:' + registration.doctorId + ':d:' + registration.registerDate + ':period:' + registration.shiftPeriod + ':incr').then(function (seq) {
                 return redis.getAsync('h:' + registration.hospitalId + ':p:' + registration.shiftPeriod).then(function (sp) {
                     registration.sequence = sp + seq;
-                    return registrationDAO.updateRegistration({id: registration.id, sequence: registration.sequence});
+                    return registrationDAO.updateRegistration({
+                        id: registration.id,
+                        sequence: registration.sequence,
+                        hasInsurance: registration.hasInsurance ? 2 : 0
+                    });
                 });
             });
         }).then(function () {

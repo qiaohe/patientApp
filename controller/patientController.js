@@ -122,6 +122,7 @@ module.exports = {
                                 registration.sequence = sp + seq;
                                 registrationDAO.updateRegistration({
                                     id: registration.id,
+                                    hasInsurance: registration.hasInsurance ? 2 : 0,
                                     sequence: registration.sequence
                                 }).then(function (result) {
                                     registrationDAO.findShiftPeriodById(registration.hospitalId, registration.shiftPeriod).then(function (result) {
@@ -297,17 +298,22 @@ module.exports = {
         var uid = req.user.id;
         var queue = 'uid:' + uid + ':favorite:' + 'hospitals';
         var hospitalId = req.body.hospitalId;
+        var favoriteQueue = 'h:' + hospitalId + ':favorite:' + 'patients';
         var result = {uid: uid, hospitalId: hospitalId, favourited: true};
         redis.zrankAsync(queue, hospitalId).then(function (index) {
-            if (index == null) return redis.zadd(queue, new Date().getTime(), hospitalId);
+            if (index == null) {
+                redis.zadd(favoriteQueue, new Date().getTime(), uid);
+                return redis.zadd(queue, new Date().getTime(), hospitalId);
+            }
             result.favourited = false;
+            redis.zrem(favoriteQueue, uid);
             return redis.zrem(queue, hospitalId);
         }).then(function () {
             return hospitalDAO.findHospitalById(hospitalId);
         }).then(function (cs) {
             if (result.favourited && cs.length) {
                 var message = config.app.welcomeMessage.replace(':hospital', cs[0].name);
-                rongcloudSDK.message.private.publish(hospitalId + '-' + cs[0].customerServiceUid, uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
+                rongcloudSDK.message.private.publish(hospitalId + '-999999', uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
                     if (err) throw err;
                     res.send({ret: 0, data: result});
                 });
@@ -345,7 +351,7 @@ module.exports = {
         }).then(function (hospitals) {
             hospitals && hospitals.forEach(function (h) {
                 if (h.customerServiceUid)
-                    h.rongCloudUid = h.id + '-' + 'cs';
+                    h.rongCloudUid = h.id + '-' + '999999';
                 delete h.customerServiceUid;
             });
             res.send({ret: 0, data: hospitals});
@@ -365,7 +371,7 @@ module.exports = {
         }).then(function (hospitals) {
             Promise.map(hospitals, function (h, index) {
                 var message = config.app.welcomeMessage.replace(':hospital', h.name);
-                rongcloudSDK.message.private.publish(h.id + '-cs', uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
+                rongcloudSDK.message.private.publish(h.id + '-999999', uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
                     if (err) throw err;
                     res.send({ret: 0, data: result});
                 });
@@ -529,7 +535,7 @@ module.exports = {
         }).then(function (cards) {
             var message = config.app.welcomeMessage.replace(':hospital', contact.hospitalName);
             hospitalDAO.findHospitalById(contact.hospitalId).then(function (hs) {
-                rongcloudSDK.message.private.publish(contact.hospitalId + '-cs', uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
+                rongcloudSDK.message.private.publish(contact.hospitalId + '-999999', uid, 'RC:TxtMsg', JSON.stringify({content: message}), message, 0, 1, 'json', function (err, resultText) {
                     if (err) throw err;
                     console.log(resultText);
                 });
